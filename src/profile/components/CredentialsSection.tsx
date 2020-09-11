@@ -1,59 +1,46 @@
-import React from 'react';
-import {validateRequiredField} from "../../utils/fieldsValidadors";
-import {Box, TextField} from "@material-ui/core";
-import {defaultFormField, IFormField} from "../../utils/types";
-
-interface CredentialsSectionState {
-  password: IFormField,
-  confirmPassword: IFormField,
-}
+import React, { Fragment } from 'react';
+import {TextField} from "@material-ui/core";
+import { IFormField, IFormPasswordField} from "../../utils/types";
 
 interface CredentialsSectionProps {
-  password: string,
-  confirmPassword: string,
+  password: IFormPasswordField,
+  confirmation: IFormField,
+  changePassword: (value: string) => void;
+  changeConfirmation: (value: string) => void;
 }
 
-class CredentialsSection extends React.Component <CredentialsSectionProps,CredentialsSectionState> {
-  constructor(props: CredentialsSectionProps){
-    super(props)
-    this.state = {
-      password: defaultFormField(),
-      confirmPassword: defaultFormField(),
-    }
-  }
+class CredentialsSection extends React.Component <CredentialsSectionProps> {
 
   render() {
-    const { password, confirmPassword } = this.state;
+    const { password, confirmation , changePassword, changeConfirmation } = this.props;
 
     return (
-      <Box style={{ margin: '2rem 0'}}>
+      <Fragment>
         <TextField
+          type="password"
           label="Password"
           value={password.value}
           required={true}
-          onChange={(event) => this.setState({
-            password: {value: event.target.value, isValid: validateRequiredField(event.target.value)}
-          })}
+          onChange={(event) => changePassword(event.target.value)}
           fullWidth={true}
-          style={{margin: '0.5rem 0'}}
           variant="outlined"
 
           {...( password.isValid ? {} : { error: true, helperText: "Ce champ est obligatoire" })}
         />
         <TextField
-          label="Confirm password"
-          value={confirmPassword.value}
+          type="password"
+          label="Confirmation"
           required={true}
-          onChange={(event) => this.setState({
-            confirmPassword: {value: event.target.value, isValid: validateRequiredField(event.target.value)}
-          })}
+          value={confirmation.value}
+          onChange={(event) => changeConfirmation(event.target.value)}
           fullWidth={true}
-          style={{margin: '0.5rem 0'}}
           variant="outlined"
+          style={{margin: '0.5rem 0'}}
 
-          {...( confirmPassword.isValid ? {} : { error: true, helperText: "Ce champ est obligatoire" })}
+
+          {...( confirmation.isValid ? {} : { error: true, helperText: "Ce champ est obligatoire" })}
         />
-      </Box>
+      </Fragment>
     );
   }
 }

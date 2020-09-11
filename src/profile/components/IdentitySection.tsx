@@ -1,32 +1,20 @@
 import React from 'react';
-import {validateRequiredField} from "../../utils/fieldsValidadors";
 import {Box, TextField} from "@material-ui/core";
-import {defaultFormField, IFormField} from "../../utils/types";
-
-interface IdentitySectionState {
-  email: IFormField,
-  firstname: IFormField,
-  lastname: IFormField
-}
+import { IFormField} from "../../utils/types";
 
 interface IdentitySectionProps {
-  email: string,
-  firstname: string,
-  lastname: string
+  email: IFormField,
+  firstname: IFormField,
+  lastname: IFormField,
+  changeEmail: (val: string) => void
+  changeFirstname: (val: string) => void,
+  changeLastname: (val: string) => void
 }
 
-class IdentitySection extends React.Component <IdentitySectionProps,IdentitySectionState> {
-  constructor(props: IdentitySectionProps){
-    super(props)
-    this.state = {
-      email: defaultFormField(),
-      firstname: defaultFormField(),
-      lastname: defaultFormField()
-    }
-  }
+class IdentitySection extends React.Component <IdentitySectionProps> {
 
   render() {
-    const { email, firstname, lastname} = this.state;
+    const { email, firstname, lastname} = this.props;
 
     return (
       <Box style={{ margin: '2rem 0'}}>
@@ -34,9 +22,7 @@ class IdentitySection extends React.Component <IdentitySectionProps,IdentitySect
           label="Email"
           value={email.value}
           required={true}
-          onChange={(event) => this.setState({
-            email: {value: event.target.value, isValid: validateRequiredField(event.target.value)}
-          })}
+          onChange={event => this.props.changeEmail(event.target.value)}
           fullWidth={true}
           style={{margin: '0.5rem 0'}}
           variant="outlined"
@@ -47,9 +33,7 @@ class IdentitySection extends React.Component <IdentitySectionProps,IdentitySect
           label="Firstname"
           value={firstname.value}
           required={true}
-          onChange={(event) => this.setState({
-            firstname: {value: event.target.value, isValid: validateRequiredField(event.target.value)}
-          })}
+          onChange={event => this.props.changeFirstname(event.target.value)}
           fullWidth={true}
           style={{margin: '0.5rem 0'}}
           variant="outlined"
@@ -60,9 +44,7 @@ class IdentitySection extends React.Component <IdentitySectionProps,IdentitySect
           label="Lastname"
           value={lastname.value}
           required={true}
-          onChange={(event) => this.setState({
-            lastname: {value: event.target.value, isValid: validateRequiredField(event.target.value)}
-          })}
+          onChange={event => this.props.changeLastname(event.target.value)}
           fullWidth={true}
           style={{margin: '0.5rem 0'}}
           variant="outlined"
