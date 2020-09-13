@@ -14,7 +14,7 @@ interface IdentitySectionProps {
 class IdentitySection extends React.Component <IdentitySectionProps> {
 
   render() {
-    const { email, firstname, lastname} = this.props;
+    const { email, firstname, lastname, changeEmail, changeFirstname, changeLastname } = this.props;
 
     return (
       <Box style={{ margin: '2rem 0'}}>
@@ -22,34 +22,34 @@ class IdentitySection extends React.Component <IdentitySectionProps> {
           label="Email"
           value={email.value}
           required={true}
-          onChange={event => this.props.changeEmail(event.target.value)}
+          onChange={event => changeEmail(event.target.value)}
           fullWidth={true}
           style={{margin: '0.5rem 0'}}
           variant="outlined"
 
-          {...( email.isValid ? {} : { error: true, helperText: "Ce champ est obligatoire" })}
+          {...( email.isValid ? {} : { error: true, helperText: email.error })}
         />
         <TextField
           label="Firstname"
           value={firstname.value}
           required={true}
-          onChange={event => this.props.changeFirstname(event.target.value)}
+          onChange={event => changeFirstname(event.target.value)}
           fullWidth={true}
           style={{margin: '0.5rem 0'}}
           variant="outlined"
 
-          {...( firstname.isValid ? {} : { error: true, helperText: "Ce champ est obligatoire" })}
+          {...( firstname.isValid ? {} : { error: true, helperText: firstname.error })}
         />
         <TextField
           label="Lastname"
           value={lastname.value}
           required={true}
-          onChange={event => this.props.changeLastname(event.target.value)}
+          onChange={event => changeLastname(event.target.value)}
           fullWidth={true}
           style={{margin: '0.5rem 0'}}
           variant="outlined"
 
-          {...( lastname.isValid ? {} : { error: true, helperText: "Ce champ est obligatoire" })}
+          {...( lastname.isValid ? {} : { error: true, helperText: lastname.error })}
         />
       </Box>
     );
