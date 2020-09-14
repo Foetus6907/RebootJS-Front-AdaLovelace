@@ -38,9 +38,10 @@ class RegisterForm extends Component<{}, RegisterFormState> {
   saveProfile = (): void => {
     const { email, firstname, lastname, password } = this.state.fields;
     register(email.value, password.value, firstname.value, lastname.value)
-      .then(_profile => history.push(`profile`))
+      .then(_profile => history.push(`login`))
       .catch(_error => this.setState({ status: 'error'}));
   }
+
 
   changeField = (field: 'email' | 'firstname' | 'lastname' | 'password' | 'confirmation'): ((value: string) => void) => {
     return (value: string) => {
