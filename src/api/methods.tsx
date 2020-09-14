@@ -11,8 +11,19 @@ export function getUsers(): Promise<User[]> {
 }
 
 export function getConnectedProfile(): Promise<User> {
-  return axios.get( `${process.env.REACT_APP_BACKEND}/profil/me`, { withCredentials: true }
-  ).then(resp => resp.data)
+  return axios.get( `${process.env.REACT_APP_BACKEND}/profil/me`, { withCredentials: true })
+    .then(resp => resp.data)
+}
+
+export function deleteProfil(): Promise<Boolean> {
+  return axios.delete( `${process.env.REACT_APP_BACKEND}/profil`, {withCredentials: true})
+    .then(resp => {
+     return resp.status === 200;
+    })
+    .catch(err => {
+      console.log('Error deleting profile', err)
+      return false
+    })
 }
 
 export function login(email: string, password: string): Promise<IProfile> {
