@@ -1,6 +1,6 @@
 import React from 'react';
 import {Switch, Route} from "react-router-dom";
-import MyContacts from "../users/components/MyContacts";
+import ContactList from "../users/components/ContactList";
 import Login from "../login/components/Login";
 import MyProfile from "../profile/components/MyProfile";
 
@@ -9,8 +9,8 @@ class AppContent extends React.Component {
     return (
       <Switch>
         <Route path='/profil' component={MyProfile}/>
-        <Route path="/login" component={Login} />
-        <Route path="/" component={MyContacts} />
+        <Route path="/login" component={Login}/>
+        <Route path="/" component={ContactList}/>
       </Switch>
     );
   }

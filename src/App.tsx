@@ -3,17 +3,16 @@ import './App.css';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core';
 import { Router } from 'react-router-dom';
 import history from "./history";
-import AppContent from "./layout/AppContent";
-import AppMenu from "./layout/AppMenu";
+import AppLayout2 from "./layout/AppLayout2";
 
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: "#FFC23C",
+      main: "#3f51b5",
       contrastText: "white"
     },
     secondary: {
-      main: "#FF5760",
+      main: "#f44336",
       contrastText: "white"
     }
   },
@@ -23,8 +22,7 @@ function App() {
   return (
     <Router history={history}>
       <ThemeProvider theme={theme}>
-        <AppMenu/>
-        <AppContent/>
+        <AppLayout2/>
       </ThemeProvider>
     </Router>
   );
