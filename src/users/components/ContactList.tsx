@@ -1,37 +1,25 @@
 import React from 'react';
 import ContactListItem from './ContactListItem';
 import { User } from '../types';
-import { getUsers } from '../../api/methods';
-import { List, ListItem, Button } from '@material-ui/core';
+import {List, ListItem, Button, Link} from '@material-ui/core';
 
-interface ContactListState {
+interface ContactListProps {
   users: User[];
 }
 
-class ContactList extends React.Component<{}, ContactListState>{
-  constructor(props: {}){
-    super(props)
-    this.state = {
-      users: []
-    }
-  }
-
-  componentDidMount(){
-    getUsers().then(fetchedUsers => { this.setState({users: fetchedUsers})})
-  }
-
+class ContactList extends React.Component<ContactListProps>{
   render(){
     return <div>
       <h1>Liste de contact</h1>
       <List>
-        {this.state.users.map((user, index) => {
+        {this.props.users.map((user, index) => {
           return  <ListItem key={index}>
                     <ContactListItem firstname={user.firstname} lastname={user.lastname}/>
                   </ListItem>
         })}
       </List>
 
-      <Button color="primary">Chat</Button>
+      <Link href='/login' component="button" color="inherit">Login</Link>
       </div>
   }
 }

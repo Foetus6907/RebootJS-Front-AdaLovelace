@@ -1,15 +1,13 @@
 import React, {Component} from 'react';
 import {
-  Avatar,
-  Divider,
+  Link,
   List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
   Theme,
-  Typography,
   withStyles
 } from "@material-ui/core";
+import Conversation from "./Conversation";
+import {IConversation} from "./types";
+import {User} from "../users/types";
 
 const styles = (theme: Theme) => {
   return {
@@ -26,36 +24,22 @@ const styles = (theme: Theme) => {
 
 interface ConversationListProps {
   classes: any;
+  users: User[]
+  conversations: IConversation[]
 }
 
 class ConversationList extends Component<ConversationListProps> {
+
   render() {
     return (
-      <List>
-        <ListItem alignItems="flex-start">
-          <ListItemAvatar>
-            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-          </ListItemAvatar>
-          <ListItemText
-            primary="Brunch this weekend?"
-            secondary={
-              <React.Fragment>
-                <Typography
-                  component="span"
-                  variant="body2"
-                  className={this.props.classes.inline}
-                  color="textPrimary"
-                >
-                  Ali Connors
-                </Typography>
-                {" — I'll be in your neighborhood doing errands this…"}
-              </React.Fragment>
-            }
-          />
-        </ListItem>
-        <Divider variant="fullWidth" component="li" />
+      <List component="nav">
+        {
+          this.props.conversations.map((conversation:IConversation, index:number) => {
+            return <Conversation conversation={conversation} key={index} users={this.props.users}/>
+          })
+        }
+        <Link href='/login' component="button" color="inherit">Login</Link>
       </List>
-
     );
   }
 }

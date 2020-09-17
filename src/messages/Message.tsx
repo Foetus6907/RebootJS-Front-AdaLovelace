@@ -1,13 +1,31 @@
 import React, {Component} from 'react';
+import {IConversationMessage} from "../conversations/types";
+import {Box, ListItem} from "@material-ui/core";
 
-class Message extends Component {
-  render() {
-    return (
-      <div>
-        
-      </div>
-    );
-  }
+interface MessageProps {
+	message: IConversationMessage
+}
+
+interface MessageState {
+
+}
+
+class Message extends Component<MessageProps, MessageState> {
+	constructor(props: MessageProps) {
+		super(props);
+		this.state = {}
+	}
+
+	render() {
+		return (
+			<ListItem alignItems="flex-start">
+				<Box color="white" bgcolor="lightblue" borderColor="grey" boxShadow="2px 1px" padding="5px"
+				     borderRadius="10px">
+					<p>{this.props.message.content}</p>
+				</Box>
+			</ListItem>
+		);
+	}
 }
 
 export default Message;

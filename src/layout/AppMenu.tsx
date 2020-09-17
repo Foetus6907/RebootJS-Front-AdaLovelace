@@ -7,6 +7,7 @@ import React, { Fragment } from 'react';
 import { ProfilButton } from './ProfilButton';
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
+import {Link} from "react-router-dom";
 
 interface AppMenuProps {
   show: () => void;
@@ -26,10 +27,12 @@ export function AppMenu({ show, showDrawer } : AppMenuProps){
             </Toolbar>
           </Grid>
           <Grid item>
-            <Toolbar>
-              <Forum fontSize="large" />
-              <Typography variant="h3">flint.</Typography>
-            </Toolbar>
+            <Link to='/login' style={{ textDecoration: 'none', color:'white'}}>
+              <Toolbar>
+                <Forum fontSize="large" />
+                <Typography variant="h3">flint.</Typography>
+              </Toolbar>
+            </Link>
           </Grid>
           <Grid item>
             <Toolbar>

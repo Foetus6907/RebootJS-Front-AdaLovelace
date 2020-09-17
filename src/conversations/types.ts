@@ -1,9 +1,9 @@
 export interface IConversation {
   _id: string;
-  target: string[];
-  updateAt: string;
+  targets: string[];
+  updatedAt: string;
   unseenMessages: number;
-  messages: IConversationMessage
+  messages: IConversationMessage[];
 }
 
 export interface IConversationMessage {

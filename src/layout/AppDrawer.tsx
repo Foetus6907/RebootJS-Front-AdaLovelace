@@ -7,14 +7,8 @@ import CloseIcon from '@material-ui/icons/Close';
 import PeopleIcon from "@material-ui/icons/People";
 import ChatIcon from "@material-ui/icons/Chat";
 import ConversationList from "../conversations/ConversationList";
-
-interface AppDrawerProps {
-  showDrawer: boolean;
-  hideDrawer: () => void;
-  classes: any;
-  drawerContent?: IDrawerContent;
-  changeDrawerContent: (content: IDrawerContent) => void;
-}
+import {User} from "../users/types";
+import {IConversation} from "../conversations/types";
 
 const styles = (theme: Theme) => createStyles({
   drawerHeader: {
@@ -32,10 +26,24 @@ const styles = (theme: Theme) => createStyles({
   }
 })
 
+interface AppDrawerProps {
+  showDrawer: boolean;
+  hideDrawer: () => void;
+  classes: any;
+  drawerContent?: IDrawerContent;
+  changeDrawerContent: (content: IDrawerContent) => void;
+  users: User[];
+  conversations: IConversation[]
+}
 
-class AppDrawer extends Component<AppDrawerProps> {
+interface AppDrawerState {
+}
+
+class AppDrawer extends Component<AppDrawerProps, AppDrawerState> {
   render() {
-    const content = this.props.drawerContent === 'contacts' ? <ContactList/> : <ConversationList />
+    const content = this.props.drawerContent === 'contacts' ?
+        <ContactList users={this.props.users}/> :
+        <ConversationList users={this.props.users} conversations={this.props.conversations}/>
 
     return this.props.showDrawer ?
       <Drawer

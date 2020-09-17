@@ -11,13 +11,17 @@ import {validateEmailField, validateNameField, validatePasswordField} from "../.
 import IdentitySection from "./IdentitySection";
 import CredentialsSection from "./CredentialsSection";
 
-export interface IProfileFormState {
+interface IProfileFormProps {
+  profile?: IProfile;
+}
+
+interface IProfileFormState {
   status: 'ready' | 'success' | 'error';
   fields: IProfileFormFields;
   profile?: IProfile;
 }
 
-class MyProfile extends React.Component<{}, IProfileFormState> {
+class MyProfile extends React.Component<IProfileFormProps, IProfileFormState> {
   constructor(props: {}) {
     super(props);
     this.state = {
@@ -31,15 +35,6 @@ class MyProfile extends React.Component<{}, IProfileFormState> {
       }
     }
   };
-
-  componentDidMount() {
-    //fetch connected profile
-    getConnectedProfile()
-      .then(profile => {
-        this.setState({profile});
-        this.resetProfile();
-      })
-  }
 
   resetProfile = () => {
     if (this.state.profile) {
