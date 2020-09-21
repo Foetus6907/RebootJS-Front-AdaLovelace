@@ -4,25 +4,23 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import {Alert} from '@material-ui/lab';
 import React from 'react';
-import {getConnectedProfile} from '../../api/methods';
 import {defaultFormField, defaultPasswordField, IProfileFormFields} from '../../utils/types';
-import {IProfile} from '../types';
 import {validateEmailField, validateNameField, validatePasswordField} from "../../utils/fieldsValidadors";
 import IdentitySection from "./IdentitySection";
 import CredentialsSection from "./CredentialsSection";
+import {User} from "../../users/types";
 
 interface IProfileFormProps {
-  profile?: IProfile;
+  connectedUser?: User;
 }
 
 interface IProfileFormState {
   status: 'ready' | 'success' | 'error';
   fields: IProfileFormFields;
-  profile?: IProfile;
 }
 
 class MyProfile extends React.Component<IProfileFormProps, IProfileFormState> {
-  constructor(props: {}) {
+  constructor(props: IProfileFormProps) {
     super(props);
     this.state = {
       status: 'ready',
@@ -37,10 +35,11 @@ class MyProfile extends React.Component<IProfileFormProps, IProfileFormState> {
   };
 
   resetProfile = () => {
-    if (this.state.profile) {
-      this.changeField('email')(this.state.profile.email);
-      this.changeField('firstname')(this.state.profile.firstname);
-      this.changeField('lastname')(this.state.profile.lastname);
+    const { connectedUser } = this.props;
+    if (connectedUser) {
+      this.changeField('email')(connectedUser.email);
+      this.changeField('firstname')(connectedUser.firstname);
+      this.changeField('lastname')(connectedUser.lastname);
       this.changeField('password')('');
       this.changeField('confirmation')('');
     }
@@ -140,7 +139,7 @@ class MyProfile extends React.Component<IProfileFormProps, IProfileFormState> {
             <Grid container justify="space-between">
               <Grid item xs={2}>
                 <Button variant="contained" fullWidth={true}
-                        onClick={(event) => console.log('Implementation du Reset')}>
+                        onClick={() => console.log('Implementation du Reset')}>
                   Reset
                 </Button>
               </Grid>

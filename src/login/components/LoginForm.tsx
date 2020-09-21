@@ -1,10 +1,13 @@
 import React from 'react';
-import { IFormField, defaultFormField } from '../../utils/types';
-import { TextField, Button, Container, Box, Grid } from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
-import { login } from '../../api/methods';
+import {defaultFormField, IFormField} from '../../utils/types';
+import {Box, Button, Container, Grid, TextField} from '@material-ui/core';
+import {Alert} from '@material-ui/lab';
+import {login} from '../../api/methods';
 import history from '../../history';
-import { validateRequiredField } from '../../utils/fieldsValidadors';
+import {validateRequiredField} from '../../utils/fieldsValidadors';
+import {IProfile} from "../../profile/types";
+import {connect} from "react-redux";
+import {updateConnectedProfileAction} from "../../profile/actions/updateConnectedProfileAction";
 
 interface LoginFormState {
   email: IFormField,
@@ -12,8 +15,12 @@ interface LoginFormState {
   status: 'ready' | 'success' | 'error',
 }
 
-class LoginForm extends React.Component<{}, LoginFormState> {
-  constructor(props: {}){
+interface LoginFormProps {
+  updateIdentity: (profile: IProfile) => void;
+}
+
+class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
+  constructor(props: LoginFormProps){
     super(props)
     this.state = {
       email: defaultFormField(),
@@ -25,7 +32,8 @@ class LoginForm extends React.Component<{}, LoginFormState> {
 
   submit(){
     login(this.state.email.value, this.state.password.value)
-      .then((_profile) => {
+      .then((profile) => {
+        this.props.updateIdentity(profile)
         history.push('/')
         // this.setState({status: 'success'})
       })
@@ -88,4 +96,12 @@ class LoginForm extends React.Component<{}, LoginFormState> {
     )}
 }
 
-export default LoginForm;
+// const mapStateToProps = () => ({});
+const mapDispatchToProps = (dispatch: any) => ({
+  updateIdentity: (profile: IProfile) => dispatch(updateConnectedProfileAction(profile))
+});
+
+// export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);
+// export default connect(mapStateToProps)(LoginForm);
+export default connect(undefined, mapDispatchToProps)(LoginForm);
+

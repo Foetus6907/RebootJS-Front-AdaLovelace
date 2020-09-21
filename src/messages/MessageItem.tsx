@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {IConversationMessage} from "../conversations/types";
+import {IConversationMessage} from "./types";
 import {Box, ListItem} from "@material-ui/core";
 
 interface MessageProps {
@@ -10,7 +10,7 @@ interface MessageState {
 
 }
 
-class Message extends Component<MessageProps, MessageState> {
+class MessageItem extends Component<MessageProps, MessageState> {
 	constructor(props: MessageProps) {
 		super(props);
 		this.state = {}
@@ -28,4 +28,4 @@ class Message extends Component<MessageProps, MessageState> {
 	}
 }
 
-export default Message;
+export default MessageItem;

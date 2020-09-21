@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
 import { List, Paper, Theme, withStyles} from "@material-ui/core";
-import {IConversation, IConversationMessage} from "../conversations/types";
-import Message from "./Message";
+import {IConversation, IConversationMessage} from "./types";
+import MessageItem from "./MessageItem";
 import MessageSenderForm from "./MessageSenderForm";
+
 
 const styles = (theme: Theme) => {
   return {
@@ -19,18 +20,34 @@ const styles = (theme: Theme) => {
 
 interface MessageListProps {
   classes: any
-  messages?: IConversationMessage[];
-  sendMessage: (conversationId: string, emitter: string, targets: string[], content: string) => void;
+  messages: IConversationMessage[];
+  sendMessage: (content: string) => void;
   conversation: IConversation;
+  conversationSeen: () => void;
 }
 
 class MessageList extends Component <MessageListProps> {
+  componentDidUpdate(prevProps: MessageListProps){
+    const { messages } = this.props;
+    const { messages: prevMessages } = prevProps;
+
+    // reception ou envoi d'un nouveau message
+    if(messages !== prevMessages){
+      this.props.conversationSeen();
+    }
+  }
+
+  componentDidMount(){
+    // création initiale du composant => ouverture de la premiere conversation
+    this.props.conversationSeen();
+  }
+
   render() {
     return (
       <Paper elevation={3}>
         <List>
-          {this.props.conversation.messages.map((message:IConversationMessage, index: number) =>{
-            return <Message key={index} message={message}/>
+          { this.props.messages.map((message:IConversationMessage, index: number) =>{
+            return <MessageItem key={index} message={message}/>
           })}
         </List>
         <MessageSenderForm

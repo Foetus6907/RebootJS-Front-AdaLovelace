@@ -14,7 +14,7 @@ import {AvatarGroup} from "@material-ui/lab";
 import {User} from "../users/types";
 import {Link} from "react-router-dom";
 
-const styles = (theme: Theme) => {
+const styles = (_theme: Theme) => {
   return {
     inline: {
       display: 'inline',

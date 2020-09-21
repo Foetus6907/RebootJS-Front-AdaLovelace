@@ -6,9 +6,12 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from '@material-ui/icons/Close';
 import PeopleIcon from "@material-ui/icons/People";
 import ChatIcon from "@material-ui/icons/Chat";
-import ConversationList from "../conversations/ConversationList";
+import ConversationList from "../messages/ConversationList";
 import {User} from "../users/types";
-import {IConversation} from "../conversations/types";
+import {IConversation} from "../messages/types";
+import {connect} from "react-redux";
+import {IAppState} from "../appReducer";
+import {changeDrawerContentAction} from "./actions/changeDrawerContentAction";
 
 const styles = (theme: Theme) => createStyles({
   drawerHeader: {
@@ -28,22 +31,22 @@ const styles = (theme: Theme) => createStyles({
 
 interface AppDrawerProps {
   showDrawer: boolean;
-  hideDrawer: () => void;
+
   classes: any;
   drawerContent?: IDrawerContent;
-  changeDrawerContent: (content: IDrawerContent) => void;
   users: User[];
   conversations: IConversation[]
+  connectedUser?: User;
+  changeDrawerContent: (content: IDrawerContent) => void;
+  hideDrawer: () => void;
 }
 
-interface AppDrawerState {
-}
 
-class AppDrawer extends Component<AppDrawerProps, AppDrawerState> {
+class AppDrawer extends Component<AppDrawerProps> {
   render() {
     const content = this.props.drawerContent === 'contacts' ?
-        <ContactList users={this.props.users}/> :
-        <ConversationList users={this.props.users} conversations={this.props.conversations}/>
+        <ContactList users={this.props.users} connectedUser={this.props.connectedUser}/> :
+        <ConversationList users={this.props.users} conversations={this.props.conversations} connectedUser={this.props.connectedUser}/>
 
     return this.props.showDrawer ?
       <Drawer
@@ -79,5 +82,16 @@ class AppDrawer extends Component<AppDrawerProps, AppDrawerState> {
   }
 }
 
-export default withStyles(styles)(AppDrawer);
 export const drawerWidth = 500;
+
+const mapStateToProps = ({ layout }: IAppState) => ({
+  showDrawer: layout.showDrawer,
+  drawerContent: layout.drawerContent
+})
+
+const mapDispatchToProps = (dispatch: any) => ({
+  hideDrawer: () => dispatch(changeDrawerContentAction(undefined, false)),
+  changeDrawerContent: (content: IDrawerContent) => dispatch(changeDrawerContentAction(content)),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(AppDrawer));

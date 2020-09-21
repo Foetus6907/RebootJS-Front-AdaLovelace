@@ -3,11 +3,17 @@ import AppMenu from "./AppMenu";
 import AppContent from "./AppContent";
 import AppDrawer, {drawerWidth} from "./AppDrawer";
 import {Theme, withStyles} from "@material-ui/core";
-import {IDrawerContent} from "./types";
 import {User} from "../users/types";
-import {getConnectedProfile, getConversations, getUsers} from "../api/methods";
-import {IConversation, IConversationMessage} from "../conversations/types";
+import {getConnectedProfile, getConversations3, getUsers} from "../api/methods";
+import {IConversation} from "../messages/types";
+import {connect} from "react-redux";
+import {IAppState} from "../appReducer";
 import {IProfile} from "../profile/types";
+import Toolbar from "@material-ui/core/Toolbar";
+import Grid from "@material-ui/core/Grid";
+import {updateConnectedProfileAction} from "../profile/actions/updateConnectedProfileAction";
+import {setAllConversationsAction} from "../messages/actions/messagesActions";
+
 
 
 const styles = (theme: Theme) => {
@@ -36,100 +42,110 @@ const styles = (theme: Theme) => {
 
 interface AppLayoutProps {
   classes: any;
+  showDrawer: boolean;
+  profile?: User;
+  updateIdentity: (profile: IProfile) => void;
+  setAllConversations: (conversations: IConversation[]) => void;
+  conversations: IConversation[];
 }
 
 interface AppLayout2State {
-  showDrawer: boolean;
-  drawerContent: IDrawerContent;
   users: User[];
-  conversations: IConversation[];
+  polling?: NodeJS.Timeout;
 }
 
 class AppLayout2 extends Component<AppLayoutProps, AppLayout2State> {
   constructor(props: AppLayoutProps) {
     super(props);
     this.state = {
-      showDrawer: false,
-      drawerContent: "contacts",
       users: [],
-      conversations: [],
     }
   }
 
-  changeDrawerContent = (content: IDrawerContent) => {
-    this.setState({drawerContent: content});
+  fetchConversations = async (profile?:IProfile) => {
+    if (!profile) return
+    const conversations = await getConversations3(profile)
+    this.props.setAllConversations(conversations)
+    // this.setState({ conversations})
   }
 
-  showDrawer = () => {
-    this.setState({showDrawer: !this.state.showDrawer});
-  }
-
-  hideDrawer = () => {
-    this.setState({
-      showDrawer: false
-    })
-  }
-
-  sendMessage = (conversationId: string, emitter: string, targets: string[], content: string) => {
-    console.log('Message sent to back end', content, conversationId, emitter, targets) ;
-    const conversation = this.state.conversations.find(conv => conv._id === conversationId);
-
-    if(conversation){
-      const newMessage: IConversationMessage = {
-        _id: '',
-        conversationId: conversation._id,
-        createdAt: new Date().toString(),
-        emitter: emitter,
-        targets: targets,
-        content: content
-      };
-      conversation.messages.push(newMessage);
-
-      this.setState({
-        conversations: [...this.state.conversations, conversation]
-      });
-    }
-  }
-
-  componentDidMount(){
+  async componentDidMount(){
     getUsers()
-        .then(fetchedUsers => { this.setState({users: fetchedUsers})})
+        .then(fetchedUsers => {this.setState({users: fetchedUsers})})
         .catch(error => console.log('Error getting users: ', error));
 
-    getConversations()
-        .then((conversations: IConversation[]) => {
-          this.setState({ conversations: conversations})
-        })
-        .catch(errors => console.log('Error getting conversations: ',errors));
+    try {
+      const users = await getConnectedProfile();
+      if (!this.props.profile) {
+        this.props.updateIdentity(users);
+      }
+      await this.fetchConversations(users);
+    } catch (error) {
+      console.log('Error getting conversations or connected user: ',error);
+    }
+
     /*
-    getConnectedProfile()
-        .then(profile => {
-          this.setState({profile});
-          this.resetProfile();
-        })
-    */
+    this.setState({ polling: setInterval(() => {
+        try {
+          this.fetchConversations(this.state.profile)
+        } catch(error) {
+          console.error(error);
+        }
+      }, 3000)})
+
+     */
+  }
+
+  componentWillUnmount() {
+    console.log(this.props.profile)
+
+    const {polling} = this.state;
+    if (polling) clearInterval(polling);
   }
 
   render() {
     const { classes } = this.props;
-    const filteredClasses = [classes.content, this.state.showDrawer && classes.contentShift].filter(Boolean).join(' ');
+    const filteredClasses = [classes.content, this.props.showDrawer && classes.contentShift].filter(Boolean).join(' ');
     // [ true && 'classe2' ] => [ 'classe2' ].filter(Boolean) => [ 'classe2 ']
     // [ false && 'classe2' ] => [ false ].filter(Boolean) => []
 
+
     return  <Fragment>
               <div className={filteredClasses}>
-                <AppMenu show={this.showDrawer} showDrawer={this.state.showDrawer}/>
-                <AppContent conversations={this.state.conversations} users={this.state.users} sendMessage={this.sendMessage}/>
+                <AppMenu/>
+                <div>
+                  {
+                    this.props.profile ?
+                        <Grid item>
+                          <Toolbar>
+                            <h1>{this.props.profile.firstname} {this.props.profile.lastname}</h1>
+                          </Toolbar>
+                        </Grid>
+                        : null
+                  }
+
+                </div>
+                <AppContent connectedUser={this.props.profile} conversations={this.props.conversations} users={this.state.users}/>
               </div>
               <AppDrawer users={this.state.users}
-                         changeDrawerContent={this.changeDrawerContent}
-                         drawerContent={this.state.drawerContent}
-                         showDrawer={this.state.showDrawer}
-                         hideDrawer={this.hideDrawer}
-                         conversations={this.state.conversations}
+                         conversations={this.props.conversations}
+                         connectedUser={this.props.profile}
               />
             </Fragment>
   }
 }
 
-export default withStyles(styles)(AppLayout2);
+const mapStateToProps= (state : IAppState) => {
+  return {
+    profile: state.profil.connectedProfile,
+    showDrawer: state.layout.showDrawer,
+    conversations: state.messages.conversations,
+  }
+}
+const mapDispatchToProps = (dispatch: any) => ({
+  updateIdentity: (profile: IProfile) => dispatch(updateConnectedProfileAction(profile)),
+  setAllConversations: (conversations: IConversation[]) => dispatch(setAllConversationsAction(conversations))
+});
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(AppLayout2));

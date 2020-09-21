@@ -24,8 +24,9 @@ const styles = (theme: Theme) => {
 
 interface ConversationListProps {
   classes: any;
-  users: User[]
-  conversations: IConversation[]
+  users: User[];
+  conversations: IConversation[];
+  connectedUser?: User;
 }
 
 class ConversationList extends Component<ConversationListProps> {

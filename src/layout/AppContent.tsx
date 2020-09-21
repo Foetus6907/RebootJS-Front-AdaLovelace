@@ -4,23 +4,30 @@ import Login from "../login/components/Login";
 import MyProfile from "../profile/components/MyProfile";
 import HomeScreen from "./HomeScreen";
 import ChatInterface from "./ChatInterface";
-import {IConversation} from "../conversations/types";
+import {IConversation} from "../messages/types";
 import {User} from "../users/types";
 
 interface AppContentProps {
     conversations: IConversation[];
     users: User[];
-    sendMessage: (conversationId: string, emitter: string, targets: string[], content: string) => void
+    connectedUser?: User;
 }
 
 class AppContent extends React.Component<AppContentProps> {
-  render() {
+    componentDidMount() {
+        console.log('app appCon', this.props.connectedUser)
+
+    }
+
+    render() {
     return (
       <Switch>
         <Route path='/conversation/:conversationId' component={() => {
-            return <ChatInterface conversations={this.props.conversations} users={this.props.users} sendMessage={this.props.sendMessage}/>
+            return <ChatInterface conversations={this.props.conversations} users={this.props.users} />
         }}/>
-        <Route path='/profil' component={MyProfile}/>
+        <Route path='/profil' component={()=> {
+            return <MyProfile connectedUser={this.props.connectedUser}/>
+        }}/>
         <Route path="/login" component={Login}/>
         <Route path="/" component={HomeScreen}/>
       </Switch>

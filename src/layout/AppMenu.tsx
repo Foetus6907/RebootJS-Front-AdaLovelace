@@ -8,20 +8,26 @@ import { ProfilButton } from './ProfilButton';
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import {Link} from "react-router-dom";
+import {IProfile} from "../profile/types";
+import {connect} from "react-redux";
+import {IAppState} from "../appReducer";
+import {changeDrawerContentAction} from "./actions/changeDrawerContentAction";
 
 interface AppMenuProps {
-  show: () => void;
+  show: (showDrawer: boolean) => void;
   showDrawer: boolean;
+  profile?: IProfile
 }
 
-export function AppMenu({ show, showDrawer } : AppMenuProps){
+
+export function AppMenu({ show, showDrawer , profile } : AppMenuProps){
   return (
     <Fragment>
       <AppBar position="static" style={{ height: '10vh' }}>
         <Grid container justify="space-between" alignItems="center" style={{ height: '100%' }}>
           <Grid item>
             <Toolbar>
-              <IconButton onClick={()=> show()} color='default' aria-label="profile">
+              <IconButton onClick={()=> show(!showDrawer)} color='default' aria-label="profile">
                 {!showDrawer ? <Menu fontSize="large"/> : <CloseIcon fontSize="large" />}
               </IconButton>
             </Toolbar>
@@ -34,11 +40,15 @@ export function AppMenu({ show, showDrawer } : AppMenuProps){
               </Toolbar>
             </Link>
           </Grid>
-          <Grid item>
-            <Toolbar>
-              <h1>Nom de l'utilisateur</h1>
-            </Toolbar>
-          </Grid>
+          {
+            profile ?
+                <Grid item>
+                  <Toolbar>
+                    <h1>{profile.firstname} {profile.lastname}</h1>
+                  </Toolbar>
+                </Grid>
+                : null
+          }
           <Grid item>
             <ProfilButton />
           </Grid>
@@ -48,5 +58,21 @@ export function AppMenu({ show, showDrawer } : AppMenuProps){
   );
 }
 
+const mapStateToProps= ({ profil, layout} : IAppState) => {
+  return {
+    profile: profil.connectedProfile,
+    showDrawer: layout.showDrawer
+  }
+}
 
-export default AppMenu;
+const mapDispatchToProps =  (dispatch: any) => {
+  return {
+    show: (showDrawer: boolean) => {
+      const content = showDrawer ? 'conversations' : undefined;
+
+      dispatch(changeDrawerContentAction(content, showDrawer))
+    },
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AppMenu);

@@ -1,65 +1,124 @@
-import React, {Component} from 'react';
-import MessageList from "../messages/MessageList";
-import {IConversation} from "../conversations/types";
-import {User} from "../users/types";
+import React, {Fragment} from 'react';
 import {match, withRouter} from 'react-router-dom';
-import MessageUserAttendedList from "../messages/MessageUserAttendedList";
+import {User} from '../users/types';
+import {IConversation, IConversationMessage} from "../messages/types";
+import history from "../history";
 import {Container, createStyles, Grid, Paper, Theme, withStyles} from "@material-ui/core";
+import MessageUserAttendedList from "../messages/MessageUserAttendedList";
+import MessageList from "../messages/MessageList";
+import {patchConversationSeen, sendMessage} from "../api/methods";
+import {IAppState} from "../appReducer";
+import {
+	addNewConversationToConversationsAction,
+	addSentMessageToConversationAction,
+	changeCurrentConversationAction,
+} from "../messages/actions/messagesActions";
+import {connect} from "react-redux";
 
-const styles = (theme: Theme) => createStyles({
+
+const styles = (_theme: Theme) => createStyles({
 	h100:{
 		height: '100%'
 	}
 });
 
 interface ChatInterfaceProps {
-	users: User[];
-	conversations: IConversation[];
-	match: match< {conversationId: string }>;
+	match: match<{ conversationId: string }>;
 	location: any;
 	history: any;
+	users: User[];
+	conversations: IConversation[];
 	classes: any;
-	sendMessage: (conversationId: string, emitter: string, targets: string[], content: string) => void;
+
+	conversation?:IConversation
+	changeCurrentConversation: (conversation: IConversation) => void
+	addSentMessageToConversation: (message: IConversationMessage) => void
+	addNewConversationToConversations: (conversation: IConversation) => void
 }
 
-interface ChatInterfaceState {
-}
+class ChatInterface extends React.Component<ChatInterfaceProps> {
 
-
-class ChatInterface extends Component<ChatInterfaceProps, ChatInterfaceState> {
-
-	render(){
-		let conversation = this.props.conversations?.find(conv => conv._id === this.props.match.params.conversationId);
-		let attendeesList: User[] = [];
-
-		if(!!conversation) {
-			conversation.targets.forEach((target: string) => {
-				const user = this.props.users.find( (user: User) => user._id === target);
-				if(user) {
-					attendeesList.push(user);
+	// TODO dispach/set global state current conversation based on conversation id and target
+	async componentDidMount() {
+		const conversations = this.props.conversations;
+		const conversationId = this.props.match.params.conversationId;
+		let conversation = conversations.find(conv => conv._id === conversationId);
+		if (conversation) {
+			this.props.changeCurrentConversation(conversation)
+		} else {
+			const target = new URLSearchParams(this.props.location.search).get('target')
+			if (!target) {
+				return history.push('/')
+			} else {
+				let conversation = {
+					_id: conversationId,
+					messages: [],
+					unseenMessages: 0,
+					updatedAt: new Date().toLocaleDateString(),
+					targets: [
+						target
+					]
 				}
-			});
+				console.log('par la')
+				this.props.addNewConversationToConversations(conversation)
+				this.props.changeCurrentConversation(conversation)
+			}
 		}
+	}
 
-		return !!conversation ? <React.Fragment>
-			<Container className={this.props.classes.h100}>
-				<Grid container spacing={2} className={this.props.classes.h100}>
-					<Grid item xs={4} className={this.props.classes.h100}>
-						<Paper elevation={3} className={this.props.classes.h100}>
-							<MessageList conversation={conversation} messages={conversation.messages} sendMessage={this.props.sendMessage}/>
-						</Paper>
-					</Grid>
+	doSendMessage = async (message: string) => {
+		console.log('message', message)
+		const { conversation } = this.props;
+		console.log('conversation', conversation)
 
-					<Grid item xs={4} className={this.props.classes.h100}>
-						<Paper elevation={3} className={this.props.classes.h100}>
-							<MessageUserAttendedList attendedUsers={attendeesList}/>
-						</Paper>
-					</Grid>
-				</Grid>
-			</Container>
+		if(conversation) {
+			const sentMessage: IConversationMessage = await sendMessage(conversation._id, conversation.targets, message);
 
-		</React.Fragment> : null
+			// Redux dispach sendMessage to set state of current conversation  with new message state
+			this.props.addSentMessageToConversation(sentMessage)
+		}
+	}
+
+	conversationSeen = () => {
+		if(this.props.conversation) { patchConversationSeen(this.props.conversation._id) }
+	}
+
+	render() {
+		return <React.Fragment>
+			<h1>Chat</h1>
+			{this.props.conversation ?
+				<Fragment>
+					<Container className={this.props.classes.h100}>
+						<Grid container spacing={2} className={this.props.classes.h100}>
+							<Grid item xs={4} className={this.props.classes.h100}>
+								<Paper elevation={3} className={this.props.classes.h100}>
+									<MessageList conversationSeen={this.conversationSeen} conversation={this.props.conversation} messages={this.props.conversation.messages}
+									             sendMessage={this.doSendMessage}/>
+								</Paper>
+							</Grid>
+
+							<Grid item xs={4} className={this.props.classes.h100}>
+								<Paper elevation={3} className={this.props.classes.h100}>
+									<MessageUserAttendedList attendedUsers={this.props.users.filter(user => this.props.conversation?.targets.includes(user._id))}/>
+								</Paper>
+							</Grid>
+						</Grid>
+					</Container>
+				</Fragment> :
+				<h1>Impossible de trouver la conversation</h1>}
+		</React.Fragment>
 	}
 }
 
-export default withRouter(withStyles(styles)(ChatInterface));
+const mapStateToProps= (state : IAppState) => {
+	return {
+		conversation: state.messages.currentConversation,
+	}
+}
+const mapDispatchToProps = (dispatch: any) => ({
+	changeCurrentConversation: (conversation: IConversation) => dispatch(changeCurrentConversationAction(conversation)),
+	addSentMessageToConversation: (message: IConversationMessage) => dispatch(addSentMessageToConversationAction(message)),
+	addNewConversationToConversations: (conversation: IConversation) => dispatch(addNewConversationToConversationsAction(conversation))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(withStyles(styles)(ChatInterface)));

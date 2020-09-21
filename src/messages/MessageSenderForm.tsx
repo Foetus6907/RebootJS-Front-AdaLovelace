@@ -4,7 +4,7 @@ import DoneOutlineIcon from '@material-ui/icons/DoneOutline';
 import BlockIcon from '@material-ui/icons/Block';
 
 interface MessageSenderFormProps {
-	sendMessage: (conversationId: string, emitter: string, targets: string[], content: string) => void;
+	sendMessage: (content: string) => void;
 	conversationId: string;
 	targets: string[];
 }
@@ -22,9 +22,8 @@ class MessageSenderForm extends Component<MessageSenderFormProps, MessageSenderF
 	}
 
 	render(){
-		const {conversationId, targets} = this.props;
 		return <React.Fragment>
-			<form onSubmit={(event) => { event.preventDefault(); this.props.sendMessage(conversationId, '12345', targets, this.state.message) }}>
+			<form onSubmit={(event) => { event.preventDefault(); this.props.sendMessage(this.state.message) }}>
         <textarea rows={3} onChange={(event) => {
 	        event.preventDefault();
 	        this.setState({message: event.target.value})

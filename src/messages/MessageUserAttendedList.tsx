@@ -14,8 +14,8 @@ class MessageUserAttendedList extends React.Component<MessageUserAttendedListPro
 	render() {
 		return (
 			 <List>
-				 {this.props.attendedUsers?.map((userAttended) => {
-					 return <UserListItem user={userAttended}/>
+				 {this.props.attendedUsers?.map((userAttended: User, index: number) => {
+					 return <UserListItem key={index} user={userAttended}/>
 				 })}
 			 </List>
 			)
