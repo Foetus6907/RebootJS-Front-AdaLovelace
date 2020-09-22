@@ -4,16 +4,16 @@ import AppContent from "./AppContent";
 import AppDrawer, {drawerWidth} from "./AppDrawer";
 import {Theme, withStyles} from "@material-ui/core";
 import {User} from "../users/types";
-import {getConnectedProfile, getConversations3, getUsers} from "../api/methods";
+import {getConnectedProfile, getConversations3} from "../api/methods";
 import {IConversation} from "../messages/types";
 import {connect} from "react-redux";
 import {IAppState} from "../appReducer";
 import {IProfile} from "../profile/types";
 import Toolbar from "@material-ui/core/Toolbar";
 import Grid from "@material-ui/core/Grid";
-import {setUsersListAction, updateConnectedProfileAction} from "../profile/actions/updateConnectedProfileAction";
+import {updateConnectedProfileAction} from "../profile/actions/updateConnectedProfileAction";
 import {setAllConversationsAction} from "../messages/actions/messagesActions";
-
+import {makeFetchUsersAction} from "../profile/actions/makeFetchUsers";
 
 
 const styles = (theme: Theme) => {
@@ -47,8 +47,8 @@ interface AppLayoutProps {
   updateIdentity: (profile: IProfile) => void;
   setAllConversations: (conversations: IConversation[]) => void;
   conversations: IConversation[];
-  setUsersListState: (users: User[]) => void;
   users: User[];
+  makeFetchUsers: () => void;
 }
 
 interface AppLayout2State {
@@ -57,13 +57,6 @@ interface AppLayout2State {
 }
 
 class AppLayout2 extends Component<AppLayoutProps, AppLayout2State> {
-  // constructor(props: AppLayoutProps) {
-  //   super(props);
-  //   this.state = {
-  //     users: [],
-  //   }
-  // }
-
   fetchConversations = async (profile?:IProfile) => {
     if (!profile) return
     const conversations = await getConversations3(profile)
@@ -72,14 +65,9 @@ class AppLayout2 extends Component<AppLayoutProps, AppLayout2State> {
   }
 
   async componentDidMount(){
-    getUsers()
-        .then(fetchedUsers => {
-          this.props.setUsersListState(fetchedUsers)
-          // this.setState({users: fetchedUsers})
-        })
-        .catch(error => console.log('Error getting users: ', error));
-
     try {
+      this.props.makeFetchUsers()
+
       const users = await getConnectedProfile();
       if (!this.props.profile) {
         this.props.updateIdentity(users);
@@ -150,7 +138,7 @@ const mapStateToProps= (state : IAppState) => {
 const mapDispatchToProps = (dispatch: any) => ({
   updateIdentity: (profile: IProfile) => dispatch(updateConnectedProfileAction(profile)),
   setAllConversations: (conversations: IConversation[]) => dispatch(setAllConversationsAction(conversations)),
-  setUsersListState: (users: User[]) => dispatch(setUsersListAction(users)),
+  makeFetchUsers: () => dispatch(makeFetchUsersAction())
 });
 
 

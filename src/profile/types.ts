@@ -21,10 +21,18 @@ export interface SetUsersListAction {
   type: typeof SET_USERS_LIST,
   users: User[]
 }
-export type IProfileAction = UpdateConnectedProfileAction | SetUsersListAction // oou TotoAction | djfkdjAction |...;
+export const SET_NEW_USERS ="SET_NEW_USERS"
+export interface SetNewUsersAction {
+  type: typeof SET_NEW_USERS,
+  newUsers: User[]
+}
+
+
+export type IProfileAction = UpdateConnectedProfileAction | SetUsersListAction | SetNewUsersAction // oou TotoAction | djfkdjAction |...;
 
 export interface IProfileState {
   connectedProfile?: IProfile;
   users: User[];
+  newUsers: User[]
 }
 

@@ -8,7 +8,7 @@ export function getUsers(): Promise<User[]> {
 	return axios.get(`${process.env.REACT_APP_BACKEND}/profil`, {withCredentials: true})
 		.then(resp => {
 			return resp.data
-		})
+		}).catch((error) => console.log("Error getting Users List", error))
 }
 
 export function getConnectedProfile(): Promise<User> {
