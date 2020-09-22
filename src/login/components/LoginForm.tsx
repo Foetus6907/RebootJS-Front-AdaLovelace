@@ -7,7 +7,7 @@ import history from '../../history';
 import {validateRequiredField} from '../../utils/fieldsValidadors';
 import {IProfile} from "../../profile/types";
 import {connect} from "react-redux";
-import {updateConnectedProfileAction} from "../../profile/actions/updateConnectedProfileAction";
+import {updateConnectedProfileAction} from "../../profile/actions/ProfileAndUserAction";
 
 interface LoginFormState {
   email: IFormField,
