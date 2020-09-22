@@ -25,7 +25,7 @@ export function messages(state: IMessagesState = defaultMessagesState(), action:
 		case ADD_SENT_MESSAGE_TO_CONVERSATION:
 			return addSentMessageToConversationCase(state, action)
 		case ADD_NEW_CONVERSATION_TO_CONVERSATIONS:
-		return addNewConversationToConversationsCase(state, action)
+			return addNewConversationToConversationsCase(state, action)
 		default:
 			return state
 	}

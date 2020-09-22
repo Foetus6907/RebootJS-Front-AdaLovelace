@@ -1,3 +1,5 @@
+import {User} from "../users/types";
+
 export interface IProfile {
   _id: string;
   email: string;
@@ -13,9 +15,16 @@ export interface UpdateConnectedProfileAction {
   profile: IProfile
 }
 // ---
-export type IProfileAction = UpdateConnectedProfileAction // oou TotoAction | djfkdjAction |...;
+
+export const SET_USERS_LIST = "SET_USERS_LIST";
+export interface SetUsersListAction {
+  type: typeof SET_USERS_LIST,
+  users: User[]
+}
+export type IProfileAction = UpdateConnectedProfileAction | SetUsersListAction // oou TotoAction | djfkdjAction |...;
 
 export interface IProfileState {
   connectedProfile?: IProfile;
+  users: User[];
 }
 

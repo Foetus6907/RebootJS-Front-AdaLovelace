@@ -11,7 +11,7 @@ import {IAppState} from "../appReducer";
 import {IProfile} from "../profile/types";
 import Toolbar from "@material-ui/core/Toolbar";
 import Grid from "@material-ui/core/Grid";
-import {updateConnectedProfileAction} from "../profile/actions/updateConnectedProfileAction";
+import {setUsersListAction, updateConnectedProfileAction} from "../profile/actions/updateConnectedProfileAction";
 import {setAllConversationsAction} from "../messages/actions/messagesActions";
 
 
@@ -47,20 +47,22 @@ interface AppLayoutProps {
   updateIdentity: (profile: IProfile) => void;
   setAllConversations: (conversations: IConversation[]) => void;
   conversations: IConversation[];
+  setUsersListState: (users: User[]) => void;
+  users: User[];
 }
 
 interface AppLayout2State {
-  users: User[];
+  // users: User[];
   polling?: NodeJS.Timeout;
 }
 
 class AppLayout2 extends Component<AppLayoutProps, AppLayout2State> {
-  constructor(props: AppLayoutProps) {
-    super(props);
-    this.state = {
-      users: [],
-    }
-  }
+  // constructor(props: AppLayoutProps) {
+  //   super(props);
+  //   this.state = {
+  //     users: [],
+  //   }
+  // }
 
   fetchConversations = async (profile?:IProfile) => {
     if (!profile) return
@@ -71,7 +73,10 @@ class AppLayout2 extends Component<AppLayoutProps, AppLayout2State> {
 
   async componentDidMount(){
     getUsers()
-        .then(fetchedUsers => {this.setState({users: fetchedUsers})})
+        .then(fetchedUsers => {
+          this.props.setUsersListState(fetchedUsers)
+          // this.setState({users: fetchedUsers})
+        })
         .catch(error => console.log('Error getting users: ', error));
 
     try {
@@ -83,16 +88,14 @@ class AppLayout2 extends Component<AppLayoutProps, AppLayout2State> {
     } catch (error) {
       console.log('Error getting conversations or connected user: ',error);
     }
-
     /*
     this.setState({ polling: setInterval(() => {
         try {
-          this.fetchConversations(this.state.profile)
+          this.fetchConversations(this.props.profile)
         } catch(error) {
           console.error(error);
         }
       }, 3000)})
-
      */
   }
 
@@ -125,9 +128,9 @@ class AppLayout2 extends Component<AppLayoutProps, AppLayout2State> {
                   }
 
                 </div>
-                <AppContent connectedUser={this.props.profile} conversations={this.props.conversations} users={this.state.users}/>
+                <AppContent connectedUser={this.props.profile} conversations={this.props.conversations} users={this.props.users}/>
               </div>
-              <AppDrawer users={this.state.users}
+              <AppDrawer users={this.props.users}
                          conversations={this.props.conversations}
                          connectedUser={this.props.profile}
               />
@@ -140,11 +143,14 @@ const mapStateToProps= (state : IAppState) => {
     profile: state.profil.connectedProfile,
     showDrawer: state.layout.showDrawer,
     conversations: state.messages.conversations,
+    users: state.profil.users,
   }
 }
+
 const mapDispatchToProps = (dispatch: any) => ({
   updateIdentity: (profile: IProfile) => dispatch(updateConnectedProfileAction(profile)),
-  setAllConversations: (conversations: IConversation[]) => dispatch(setAllConversationsAction(conversations))
+  setAllConversations: (conversations: IConversation[]) => dispatch(setAllConversationsAction(conversations)),
+  setUsersListState: (users: User[]) => dispatch(setUsersListAction(users)),
 });
 
 

@@ -38,7 +38,7 @@ class Conversation extends Component<ConversationProps> {
             </AvatarGroup>
           </ListItemAvatar>
           <ListItemText
-              primary={this.props.conversation.messages[0].content}
+              primary={this.props.conversation.messages.length > 0 ?  this.props.conversation.messages[0].content : ''}
               secondary={
                 <React.Fragment>
                   <Typography
