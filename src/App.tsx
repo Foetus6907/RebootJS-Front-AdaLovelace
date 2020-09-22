@@ -3,7 +3,7 @@ import './App.css';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core';
 import { Router } from 'react-router-dom';
 import history from "./history";
-import AppLayout2 from "./layout/AppLayout2";
+import AppLayout2 from "./layout/components/AppLayout2";
 import {Provider} from "react-redux";
 import {store} from "./store";
 

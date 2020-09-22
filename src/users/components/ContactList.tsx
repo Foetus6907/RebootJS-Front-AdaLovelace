@@ -1,16 +1,19 @@
 import React from 'react';
 import ContactListItem from './ContactListItem';
-import { User } from '../types';
 import {List, ListItem, Link} from '@material-ui/core';
 import history from "../../history";
+import {IProfile} from "../../profile/types";
+import {IAppState} from "../../appReducer";
+import {connect} from "react-redux";
 
 interface ContactListProps {
-  users: User[];
-  connectedUser?: User;
+  users: IProfile[];
+  connectedUser?: IProfile;
 }
 
 class ContactList extends React.Component<ContactListProps>{
   createConversation = (target: string) => {
+    // TOTO dispach setcurrentconversation
     const {connectedUser} = this.props;
     if(connectedUser){
       const conversationId = this.generateConversationId(connectedUser._id, target);
@@ -38,4 +41,10 @@ class ContactList extends React.Component<ContactListProps>{
   }
 }
 
-export default ContactList;
+
+const mapStateToProps = (state: IAppState) => ({
+  users: state.profil.users,
+  connectedUser: state.profil.connectedProfile
+})
+
+export default connect(mapStateToProps)(ContactList);

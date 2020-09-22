@@ -1,8 +1,10 @@
 import React, {Component} from 'react';
-import { List, Paper, Theme, withStyles} from "@material-ui/core";
-import {IConversation, IConversationMessage} from "./types";
+import {List, Paper, Theme, withStyles} from "@material-ui/core";
+import {IConversationMessage} from "../types";
 import MessageItem from "./MessageItem";
 import MessageSenderForm from "./MessageSenderForm";
+import {IAppState} from "../../appReducer";
+import {connect} from "react-redux";
 
 
 const styles = (theme: Theme) => {
@@ -22,7 +24,6 @@ interface MessageListProps {
   classes: any
   messages: IConversationMessage[];
   sendMessage: (content: string) => void;
-  conversation: IConversation;
   conversationSeen: () => void;
 }
 
@@ -51,11 +52,15 @@ class MessageList extends Component <MessageListProps> {
           })}
         </List>
         <MessageSenderForm
-            conversationId={this.props.conversation._id}
-            targets={this.props.conversation.targets} sendMessage={this.props.sendMessage}/>
+           sendMessage={this.props.sendMessage}/>
       </Paper>
     );
   }
 }
 
-export default withStyles(styles)(MessageList);
+const mapStateToProps= (state : IAppState) => {
+  return {
+    messages: state.messages.currentConversation.messages,
+  }
+}
+export default connect(mapStateToProps)(withStyles(styles)(MessageList));

@@ -9,10 +9,12 @@ import {
   Typography,
   withStyles
 } from "@material-ui/core";
-import {IConversation} from "./types";
+import {IConversation} from "../types";
 import {AvatarGroup} from "@material-ui/lab";
-import {User} from "../users/types";
 import {Link} from "react-router-dom";
+import {IProfile} from "../../profile/types";
+import {IAppState} from "../../appReducer";
+import {connect} from "react-redux";
 
 const styles = (_theme: Theme) => {
   return {
@@ -25,7 +27,7 @@ const styles = (_theme: Theme) => {
 interface ConversationProps {
   classes: any;
   conversation: IConversation;
-  users: User[];
+  users: IProfile[];
 }
 
 class Conversation extends Component<ConversationProps> {
@@ -61,6 +63,9 @@ class Conversation extends Component<ConversationProps> {
   getUserFormList = (id: string) => this.props.users.find(user => user._id === id)
 }
 
-
-
-export default withStyles(styles)(Conversation);
+const mapStateToProps= (state : IAppState) => {
+  return {
+    users: state.profil.users,
+  }
+}
+export default connect(mapStateToProps)(withStyles(styles)(Conversation));

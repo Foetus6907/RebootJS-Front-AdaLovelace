@@ -1,18 +1,17 @@
 import React, {Fragment} from 'react';
 import {match, withRouter} from 'react-router-dom';
-import {User} from '../users/types';
-import {IConversation, IConversationMessage} from "../messages/types";
-import history from "../history";
+import {IConversation, IConversationMessage} from "../types";
+import history from "../../history";
 import {Container, createStyles, Grid, Paper, Theme, withStyles} from "@material-ui/core";
-import MessageUserAttendedList from "../messages/MessageUserAttendedList";
-import MessageList from "../messages/MessageList";
-import {patchConversationSeen, sendMessage} from "../api/methods";
-import {IAppState} from "../appReducer";
+import MessageUserAttendedList from "./MessageUserAttendedList";
+import MessageList from "./MessageList";
+import {patchConversationSeen, sendMessage} from "../../api/methods";
+import {IAppState} from "../../appReducer";
 import {
 	addNewConversationToConversationsAction,
 	addSentMessageToConversationAction,
 	changeCurrentConversationAction,
-} from "../messages/actions/messagesActions";
+} from "../actions/messagesActions";
 import {connect} from "react-redux";
 
 
@@ -26,7 +25,6 @@ interface ChatInterfaceProps {
 	match: match<{ conversationId: string }>;
 	location: any;
 	history: any;
-	users: User[];
 	conversations: IConversation[];
 	classes: any;
 
@@ -92,14 +90,14 @@ class ChatInterface extends React.Component<ChatInterfaceProps> {
 						<Grid container spacing={2} className={this.props.classes.h100}>
 							<Grid item xs={4} className={this.props.classes.h100}>
 								<Paper elevation={3} className={this.props.classes.h100}>
-									<MessageList conversationSeen={this.conversationSeen} conversation={this.props.conversation} messages={this.props.conversation.messages}
+									<MessageList conversationSeen={this.conversationSeen}
 									             sendMessage={this.doSendMessage}/>
 								</Paper>
 							</Grid>
 
 							<Grid item xs={4} className={this.props.classes.h100}>
 								<Paper elevation={3} className={this.props.classes.h100}>
-									<MessageUserAttendedList attendedUsers={this.props.users.filter(user => this.props.conversation?.targets.includes(user._id))}/>
+									<MessageUserAttendedList />
 								</Paper>
 							</Grid>
 						</Grid>
@@ -113,6 +111,7 @@ class ChatInterface extends React.Component<ChatInterfaceProps> {
 const mapStateToProps= (state : IAppState) => {
 	return {
 		conversation: state.messages.currentConversation,
+		conversations: state.messages.conversations
 	}
 }
 const mapDispatchToProps = (dispatch: any) => ({

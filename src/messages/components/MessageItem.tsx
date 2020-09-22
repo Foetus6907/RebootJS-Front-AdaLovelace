@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {IConversationMessage} from "./types";
+import {IConversationMessage} from "../types";
 import {Box, ListItem} from "@material-ui/core";
 
 interface MessageProps {

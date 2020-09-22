@@ -5,8 +5,6 @@ import BlockIcon from '@material-ui/icons/Block';
 
 interface MessageSenderFormProps {
 	sendMessage: (content: string) => void;
-	conversationId: string;
-	targets: string[];
 }
 
 interface MessageSenderFormState {

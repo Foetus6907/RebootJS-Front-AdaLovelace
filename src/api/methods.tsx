@@ -1,17 +1,16 @@
-import {User} from "../users/types";
 import axios from 'axios';
 import {IProfile} from "../profile/types";
 import {IConversation, IConversationMessage} from "../messages/types";
 
 // fetch users via the server
-export function getUsers(): Promise<User[]> {
+export function getUsers(): Promise<IProfile[]> {
 	return axios.get(`${process.env.REACT_APP_BACKEND}/profil`, {withCredentials: true})
 		.then(resp => {
 			return resp.data
 		}).catch((error) => console.log("Error getting Users List", error))
 }
 
-export function getConnectedProfile(): Promise<User> {
+export function getConnectedProfile(): Promise<IProfile> {
 	return axios.get(`${process.env.REACT_APP_BACKEND}/profil/me`, {withCredentials: true})
 		.then(resp => resp.data)
 }

@@ -3,17 +3,14 @@ import AppMenu from "./AppMenu";
 import AppContent from "./AppContent";
 import AppDrawer, {drawerWidth} from "./AppDrawer";
 import {Theme, withStyles} from "@material-ui/core";
-import {User} from "../users/types";
-import {getConnectedProfile, getConversations3} from "../api/methods";
-import {IConversation} from "../messages/types";
+import {getConnectedProfile, getConversations3} from "../../api/methods";
+import {IConversation} from "../../messages/types";
 import {connect} from "react-redux";
-import {IAppState} from "../appReducer";
-import {IProfile} from "../profile/types";
-import Toolbar from "@material-ui/core/Toolbar";
-import Grid from "@material-ui/core/Grid";
-import {updateConnectedProfileAction} from "../profile/actions/updateConnectedProfileAction";
-import {setAllConversationsAction} from "../messages/actions/messagesActions";
-import {makeFetchUsersAction} from "../profile/actions/makeFetchUsers";
+import {IAppState} from "../../appReducer";
+import {IProfile} from "../../profile/types";
+import {updateConnectedProfileAction} from "../../profile/actions/ProfileAndUserAction";
+import {setAllConversationsAction} from "../../messages/actions/messagesActions";
+import {makeFetchUsersAction} from "../../profile/actions/makeFetchUsersAction";
 
 
 const styles = (theme: Theme) => {
@@ -43,11 +40,9 @@ const styles = (theme: Theme) => {
 interface AppLayoutProps {
   classes: any;
   showDrawer: boolean;
-  profile?: User;
+  profile?: IProfile;
   updateIdentity: (profile: IProfile) => void;
   setAllConversations: (conversations: IConversation[]) => void;
-  conversations: IConversation[];
-  users: User[];
   makeFetchUsers: () => void;
 }
 
@@ -88,8 +83,6 @@ class AppLayout2 extends Component<AppLayoutProps, AppLayout2State> {
   }
 
   componentWillUnmount() {
-    console.log(this.props.profile)
-
     const {polling} = this.state;
     if (polling) clearInterval(polling);
   }
@@ -104,24 +97,9 @@ class AppLayout2 extends Component<AppLayoutProps, AppLayout2State> {
     return  <Fragment>
               <div className={filteredClasses}>
                 <AppMenu/>
-                <div>
-                  {
-                    this.props.profile ?
-                        <Grid item>
-                          <Toolbar>
-                            <h1>{this.props.profile.firstname} {this.props.profile.lastname}</h1>
-                          </Toolbar>
-                        </Grid>
-                        : null
-                  }
-
-                </div>
-                <AppContent connectedUser={this.props.profile} conversations={this.props.conversations} users={this.props.users}/>
+                <AppContent/>
               </div>
-              <AppDrawer users={this.props.users}
-                         conversations={this.props.conversations}
-                         connectedUser={this.props.profile}
-              />
+              <AppDrawer/>
             </Fragment>
   }
 }
@@ -130,8 +108,6 @@ const mapStateToProps= (state : IAppState) => {
   return {
     profile: state.profil.connectedProfile,
     showDrawer: state.layout.showDrawer,
-    conversations: state.messages.conversations,
-    users: state.profil.users,
   }
 }
 

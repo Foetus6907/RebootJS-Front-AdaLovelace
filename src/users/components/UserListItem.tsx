@@ -1,9 +1,9 @@
 import React, {Component, Fragment} from 'react';
-import {User} from "../types";
 import {Avatar, Divider, ListItem, ListItemAvatar, ListItemText} from "@material-ui/core";
+import {IProfile} from "../../profile/types";
 
 interface UserListItemProps {
-	user: User;
+	user: IProfile;
 }
 
 class UserListItem extends Component<UserListItemProps> {
@@ -26,4 +26,4 @@ class UserListItem extends Component<UserListItemProps> {
 	}
 }
 
-export default UserListItem;
+export default (UserListItem);

@@ -1,13 +1,9 @@
 import React, {Component} from 'react';
-import {
-  Link,
-  List,
-  Theme,
-  withStyles
-} from "@material-ui/core";
+import {Link, List, Theme, withStyles} from "@material-ui/core";
 import Conversation from "./Conversation";
-import {IConversation} from "./types";
-import {User} from "../users/types";
+import {IConversation} from "../types";
+import {IAppState} from "../../appReducer";
+import {connect} from "react-redux";
 
 const styles = (theme: Theme) => {
   return {
@@ -24,9 +20,7 @@ const styles = (theme: Theme) => {
 
 interface ConversationListProps {
   classes: any;
-  users: User[];
   conversations: IConversation[];
-  connectedUser?: User;
 }
 
 class ConversationList extends Component<ConversationListProps> {
@@ -36,7 +30,7 @@ class ConversationList extends Component<ConversationListProps> {
       <List component="nav">
         {
           this.props.conversations.map((conversation:IConversation, index:number) => {
-            return <Conversation conversation={conversation} key={index} users={this.props.users}/>
+            return <Conversation conversation={conversation} key={index}/>
           })
         }
         <Link href='/login' component="button" color="inherit">Login</Link>
@@ -44,5 +38,7 @@ class ConversationList extends Component<ConversationListProps> {
     );
   }
 }
-
-export default withStyles(styles)(ConversationList);
+const mapStateToProps = ({ messages }: IAppState) => ({
+  conversations: messages.conversations,
+})
+export default connect(mapStateToProps) (withStyles(styles)(ConversationList));

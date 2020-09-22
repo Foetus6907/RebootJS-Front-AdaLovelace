@@ -1,17 +1,15 @@
 import React, {Component} from 'react';
 import {Box, createStyles, Drawer, Grid, Theme, Tooltip, withStyles} from "@material-ui/core";
-import {IDrawerContent} from "./types";
-import ContactList from "../users/components/ContactList";
+import {IDrawerContent} from "../types";
+import ContactList from "../../users/components/ContactList";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from '@material-ui/icons/Close';
 import PeopleIcon from "@material-ui/icons/People";
 import ChatIcon from "@material-ui/icons/Chat";
-import ConversationList from "../messages/ConversationList";
-import {User} from "../users/types";
-import {IConversation} from "../messages/types";
+import ConversationList from "../../messages/components/ConversationList";
 import {connect} from "react-redux";
-import {IAppState} from "../appReducer";
-import {changeDrawerContentAction} from "./actions/changeDrawerContentAction";
+import {IAppState} from "../../appReducer";
+import {changeDrawerContentAction} from "../actions/changeDrawerContentAction";
 
 const styles = (theme: Theme) => createStyles({
   drawerHeader: {
@@ -31,12 +29,8 @@ const styles = (theme: Theme) => createStyles({
 
 interface AppDrawerProps {
   showDrawer: boolean;
-
   classes: any;
   drawerContent?: IDrawerContent;
-  users: User[];
-  conversations: IConversation[]
-  connectedUser?: User;
   changeDrawerContent: (content: IDrawerContent) => void;
   hideDrawer: () => void;
 }
@@ -45,8 +39,8 @@ interface AppDrawerProps {
 class AppDrawer extends Component<AppDrawerProps> {
   render() {
     const content = this.props.drawerContent === 'contacts' ?
-        <ContactList users={this.props.users} connectedUser={this.props.connectedUser}/> :
-        <ConversationList users={this.props.users} conversations={this.props.conversations} connectedUser={this.props.connectedUser}/>
+        <ContactList /> :
+        <ConversationList/>
 
     return this.props.showDrawer ?
       <Drawer

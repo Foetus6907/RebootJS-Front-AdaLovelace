@@ -4,7 +4,7 @@ class HomeScreen extends Component {
 	render() {
 		return (
 			<div>
-				Page d'acceuil
+				Page d'acceuile
 			</div>
 		);
 	}

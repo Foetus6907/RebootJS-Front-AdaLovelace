@@ -8,10 +8,10 @@ import { ProfilButton } from './ProfilButton';
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import {Link} from "react-router-dom";
-import {IProfile} from "../profile/types";
+import {IProfile} from "../../profile/types";
 import {connect} from "react-redux";
-import {IAppState} from "../appReducer";
-import {changeDrawerContentAction} from "./actions/changeDrawerContentAction";
+import {IAppState} from "../../appReducer";
+import {changeDrawerContentAction} from "../actions/changeDrawerContentAction";
 
 interface AppMenuProps {
   show: (showDrawer: boolean) => void;
