@@ -18,7 +18,7 @@ export function makePollingConversationsStartAction(): (dispatch: any, getState:
 				} catch (error) {
 					console.log("Error fetching conversations", error)
 				}
-			}, 3000);
+			}, 300000);
 
 			// set polling state
 			dispatch(setPollingAction(polling))

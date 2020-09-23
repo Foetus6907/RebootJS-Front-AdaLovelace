@@ -28,7 +28,7 @@ interface ChatInterfaceProps {
 	conversations: IConversation[];
 	classes: any;
 
-	conversation?:IConversation
+	currentConversation?:IConversation
 	changeCurrentConversation: (conversation: IConversation) => void
 	addSentMessageToConversation: (message: IConversationMessage) => void
 	addNewConversationToConversations: (conversation: IConversation) => void
@@ -66,11 +66,11 @@ class ChatInterface extends React.Component<ChatInterfaceProps> {
 
 	doSendMessage = async (message: string) => {
 		console.log('message', message)
-		const { conversation } = this.props;
-		console.log('conversation', conversation)
+		const { currentConversation } = this.props;
+		console.log('conversation', currentConversation)
 
-		if(conversation) {
-			const sentMessage: IConversationMessage = await sendMessage(conversation._id, conversation.targets, message);
+		if(currentConversation) {
+			const sentMessage: IConversationMessage = await sendMessage(currentConversation._id, currentConversation.targets, message);
 
 			// Redux dispach sendMessage to set state of current conversation  with new message state
 			this.props.addSentMessageToConversation(sentMessage)
@@ -78,13 +78,15 @@ class ChatInterface extends React.Component<ChatInterfaceProps> {
 	}
 
 	conversationSeen = () => {
-		if(this.props.conversation) { patchConversationSeen(this.props.conversation._id) }
+		if(this.props.currentConversation) {
+			patchConversationSeen(this.props.currentConversation._id).then().catch(e=> console.log(e));
+		}
 	}
 
 	render() {
 		return <React.Fragment>
 			<h1>Chat</h1>
-			{this.props.conversation ?
+			{this.props.currentConversation ?
 				<Fragment>
 					<Container className={this.props.classes.h100}>
 						<Grid container spacing={2} className={this.props.classes.h100}>
@@ -110,7 +112,7 @@ class ChatInterface extends React.Component<ChatInterfaceProps> {
 
 const mapStateToProps= (state : IAppState) => {
 	return {
-		conversation: state.messages.currentConversation,
+		currentConversation: state.messages.currentConversation,
 		conversations: state.messages.conversations
 	}
 }

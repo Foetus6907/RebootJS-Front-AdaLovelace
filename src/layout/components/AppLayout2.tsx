@@ -3,13 +3,11 @@ import AppMenu from "./AppMenu";
 import AppContent from "./AppContent";
 import AppDrawer, {drawerWidth} from "./AppDrawer";
 import {Theme, withStyles} from "@material-ui/core";
-import {getConnectedProfile, getConversations3} from "../../api/methods";
-import {IConversation} from "../../messages/types";
+import {getConnectedProfile} from "../../api/methods";
 import {connect} from "react-redux";
 import {IAppState} from "../../appReducer";
 import {IProfile} from "../../profile/types";
 import {updateConnectedProfileAction} from "../../profile/actions/ProfileAndUserAction";
-import {setAllConversationsAction} from "../../messages/actions/messagesActions";
 import {makeFetchUsersAction} from "../../profile/actions/makeFetchUsersAction";
 import {makeFetchConversationsAction} from "../../messages/actions/makeFetchConversationsAction";
 import {

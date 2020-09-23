@@ -86,7 +86,6 @@ function getLastMessageDate(messages: IConversationMessage[]) {
 	return messages[messages.length - 1].createdAt
 }
 
-
 export async function sendMessage(conversationId: string, targets: string[], content: string): Promise<IConversationMessage> {
 	const resp = await axios.post(`${process.env.REACT_APP_BACKEND}/messages`, {
 		conversationId,
@@ -96,11 +95,25 @@ export async function sendMessage(conversationId: string, targets: string[], con
 	return resp.data as IConversationMessage
 }
 
-export async function getConversation(conversationId: string): Promise<IConversation[]> {
-	const resp = await axios.get(`${process.env.REACT_APP_BACKEND}/messages/${conversationId}`, {withCredentials: true})
-	return resp.data;
+export async function patchConversationSeen(conversationId: string): Promise<IProfile>{
+	console.log('patch conversation', conversationId, conversationId !== '0')
+	if (conversationId !== '0') {
+		try {
+			const resp = await axios.patch(
+				`${process.env.REACT_APP_BACKEND}/profil/conversation-seen/${conversationId}`,
+				{},
+				{ withCredentials: true }
+			);
+			return resp.data;
+		} catch (e) {
+			return Promise.reject(new Error('Error in patch conversation'))
+		}
+	} else {
+		return Promise.reject(new Error('Error in patch conversation'))
+	}
 }
 
+/*
 export function getConversations(): Promise<IConversation[]> {
 	return Promise.resolve([
 		{
@@ -167,13 +180,5 @@ export function getConversations(): Promise<IConversation[]> {
 		}
 	])
 }
-
-export async function patchConversationSeen(conversationId: string): Promise<IProfile>{
-	const resp = await axios.patch(
-		`${process.env.REACT_APP_BACKEND}/profil/conversation_seen/${conversationId}`,
-		{},
-		{ withCredentials: true }
-	);
-	return resp.data;
-}
+ */
 
