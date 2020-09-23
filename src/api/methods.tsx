@@ -13,6 +13,7 @@ export function getUsers(): Promise<IProfile[]> {
 export function getConnectedProfile(): Promise<IProfile> {
 	return axios.get(`${process.env.REACT_APP_BACKEND}/profil/me`, {withCredentials: true})
 		.then(resp => resp.data)
+		.catch((error) => console.log("Error getting Connected profile", error))
 }
 
 export function deleteProfil(): Promise<Boolean> {

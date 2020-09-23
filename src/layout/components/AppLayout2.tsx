@@ -11,6 +11,11 @@ import {IProfile} from "../../profile/types";
 import {updateConnectedProfileAction} from "../../profile/actions/ProfileAndUserAction";
 import {setAllConversationsAction} from "../../messages/actions/messagesActions";
 import {makeFetchUsersAction} from "../../profile/actions/makeFetchUsersAction";
+import {makeFetchConversationsAction} from "../../messages/actions/makeFetchConversationsAction";
+import {
+  makePollingConversationsStartAction,
+  makePollingConversationsStopAction
+} from "../../messages/actions/makePollingConversationsStartAction";
 
 
 const styles = (theme: Theme) => {
@@ -42,8 +47,10 @@ interface AppLayoutProps {
   showDrawer: boolean;
   profile?: IProfile;
   updateIdentity: (profile: IProfile) => void;
-  setAllConversations: (conversations: IConversation[]) => void;
   makeFetchUsers: () => void;
+  makeFetchConversations: () => void;
+  makePollingConversationsStart: () => void;
+  makePollingConversationsStop: () => void;
 }
 
 interface AppLayout2State {
@@ -52,39 +59,23 @@ interface AppLayout2State {
 }
 
 class AppLayout2 extends Component<AppLayoutProps, AppLayout2State> {
-  fetchConversations = async (profile?:IProfile) => {
-    if (!profile) return
-    const conversations = await getConversations3(profile)
-    this.props.setAllConversations(conversations)
-    // this.setState({ conversations})
-  }
 
   async componentDidMount(){
     try {
+      const connectedProfile = await getConnectedProfile();
+      this.props.updateIdentity(connectedProfile);
       this.props.makeFetchUsers()
+      this.props.makeFetchConversations()
+      this.props.makePollingConversationsStart()
 
-      const users = await getConnectedProfile();
-      if (!this.props.profile) {
-        this.props.updateIdentity(users);
-      }
-      await this.fetchConversations(users);
     } catch (error) {
-      console.log('Error getting conversations or connected user: ',error);
+      console.log('Error getting conversations or connecteduser or users: ',error);
     }
-    /*
-    this.setState({ polling: setInterval(() => {
-        try {
-          this.fetchConversations(this.props.profile)
-        } catch(error) {
-          console.error(error);
-        }
-      }, 3000)})
-     */
+
   }
 
   componentWillUnmount() {
-    const {polling} = this.state;
-    if (polling) clearInterval(polling);
+    this.props.makePollingConversationsStop()
   }
 
   render() {
@@ -113,8 +104,10 @@ const mapStateToProps= (state : IAppState) => {
 
 const mapDispatchToProps = (dispatch: any) => ({
   updateIdentity: (profile: IProfile) => dispatch(updateConnectedProfileAction(profile)),
-  setAllConversations: (conversations: IConversation[]) => dispatch(setAllConversationsAction(conversations)),
-  makeFetchUsers: () => dispatch(makeFetchUsersAction())
+  makeFetchUsers: () => dispatch(makeFetchUsersAction()),
+  makeFetchConversations: () => dispatch(makeFetchConversationsAction()),
+  makePollingConversationsStart: () => dispatch(makePollingConversationsStartAction()),
+  makePollingConversationsStop: () => dispatch(makePollingConversationsStopAction())
 });
 
 

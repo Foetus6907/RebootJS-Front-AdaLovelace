@@ -2,11 +2,16 @@ import {
 	ADD_NEW_CONVERSATION_TO_CONVERSATIONS,
 	ADD_SENT_MESSAGE_TO_CONVERSATION,
 	CHANGE_CURRENT_CONVERSATION,
-	GET_ALL_CONVERSATIONS, IAddNewConversationToConversationsAction,
+	GET_ALL_CONVERSATIONS,
+	IAddNewConversationToConversationsAction,
 	IAddSentMessageToConversationAction,
 	IConversation,
 	IMessagesAction,
-	IMessagesState
+	IMessagesState,
+	ISetPollingAction,
+	IStopPollingAction,
+	SET_POLLING,
+	STOP_POLLING
 } from "../types";
 
 export function changeCurrentConversationCase(state: IMessagesState, action: IMessagesAction) : IMessagesState {
@@ -50,5 +55,25 @@ export function addNewConversationToConversationsCase(state: IMessagesState, act
 			...state,
 			conversations: [...state.conversations, action.newConversation]
 		}
+	return state
+}
+
+export function setPollingStateCase(state: IMessagesState, action:ISetPollingAction): IMessagesState {
+	if (action.type === SET_POLLING) {
+		return {
+			...state,
+			polling: action.polling
+		}
+	}
+	return state
+}
+
+export function stopPollingStateCase(state: IMessagesState, action:IStopPollingAction): IMessagesState {
+	if (action.type === STOP_POLLING) {
+		return {
+			...state,
+			polling: action.polling
+		}
+	}
 	return state
 }

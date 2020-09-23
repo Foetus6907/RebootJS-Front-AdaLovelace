@@ -7,6 +7,7 @@ export const defaultMessagesState = () => {
 			updatedAt: new Date().toLocaleDateString(),
 			targets: []
 		},
-		conversations: []
+		conversations: [],
+		polling: undefined
 	}
 }

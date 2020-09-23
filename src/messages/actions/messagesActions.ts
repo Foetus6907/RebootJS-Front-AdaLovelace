@@ -8,7 +8,7 @@ import {
 	IChangeCurrentConversationAction,
 	IConversation,
 	IConversationMessage,
-	IGetAllConversationsAction
+	IGetAllConversationsAction, ISetPollingAction, IStopPollingAction, SET_POLLING, STOP_POLLING
 } from "../types";
 
 export function changeCurrentConversationAction(currentConversation: IConversation): IChangeCurrentConversationAction {
@@ -36,5 +36,19 @@ export function addNewConversationToConversationsAction(conversation: IConversat
 	return {
 		type: ADD_NEW_CONVERSATION_TO_CONVERSATIONS,
 		newConversation: conversation
+	}
+}
+
+export function setPollingAction(polling: NodeJS.Timeout): ISetPollingAction {
+	return {
+		type: SET_POLLING,
+		polling: polling
+	}
+}
+
+export function stopPollingAction(): IStopPollingAction {
+	return {
+		type: STOP_POLLING,
+		polling: undefined
 	}
 }

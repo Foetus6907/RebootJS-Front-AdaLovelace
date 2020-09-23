@@ -4,13 +4,13 @@ import {
 	CHANGE_CURRENT_CONVERSATION,
 	GET_ALL_CONVERSATIONS,
 	IMessagesAction,
-	IMessagesState
+	IMessagesState, SET_POLLING, STOP_POLLING
 } from "./types";
 import {
 	addNewConversationToConversationsCase,
 	addSentMessageToConversationCase,
 	changeCurrentConversationCase,
-	getAllConversationsCase
+	getAllConversationsCase, setPollingStateCase, stopPollingStateCase
 } from "./cases/messagesCases";
 import {defaultMessagesState} from "./utils/defaultMessagesState";
 
@@ -26,6 +26,10 @@ export function messages(state: IMessagesState = defaultMessagesState(), action:
 			return addSentMessageToConversationCase(state, action)
 		case ADD_NEW_CONVERSATION_TO_CONVERSATIONS:
 			return addNewConversationToConversationsCase(state, action)
+		case SET_POLLING:
+			return setPollingStateCase(state, action)
+		case STOP_POLLING:
+			return stopPollingStateCase(state, action)
 		default:
 			return state
 	}

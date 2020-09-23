@@ -41,10 +41,24 @@ export interface IAddNewConversationToConversationsAction {
   newConversation: IConversation
 }
 
+export const SET_POLLING = "SET_POLLING"
+export interface ISetPollingAction {
+  type: typeof SET_POLLING
+  polling: NodeJS.Timeout
+}
+
+export const STOP_POLLING = "STOP_POLLING"
+export interface IStopPollingAction {
+  type: typeof STOP_POLLING
+  polling: undefined
+}
+
 export interface IMessagesState {
   currentConversation: IConversation;
   conversations: IConversation[];
+  polling?: NodeJS.Timeout;
 }
 
 export type IMessagesAction = IGetAllConversationsAction | IChangeCurrentConversationAction
                                   | IAddSentMessageToConversationAction | IAddNewConversationToConversationsAction
+                                  | ISetPollingAction | IStopPollingAction
