@@ -8,7 +8,12 @@ import {
 	IChangeCurrentConversationAction,
 	IConversation,
 	IConversationMessage,
-	IGetAllConversationsAction, ISetPollingAction, IStopPollingAction, SET_POLLING, STOP_POLLING
+	IGetAllConversationsAction,
+	ISetPollingAction,
+	IStopPollingAction,
+	IUpdateConversationWithNewMessageAction,
+	SET_POLLING,
+	STOP_POLLING, UPDATE_CONVERSATION_WITH_NEW_MESSAGE
 } from "../types";
 
 export function changeCurrentConversationAction(currentConversation: IConversation): IChangeCurrentConversationAction {
@@ -50,5 +55,12 @@ export function stopPollingAction(): IStopPollingAction {
 	return {
 		type: STOP_POLLING,
 		polling: undefined
+	}
+}
+
+export function updateConversationWithNewMessageAction(message: IConversationMessage): IUpdateConversationWithNewMessageAction {
+	return {
+		type: UPDATE_CONVERSATION_WITH_NEW_MESSAGE,
+		message: message
 	}
 }

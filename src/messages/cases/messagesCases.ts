@@ -5,13 +5,13 @@ import {
 	GET_ALL_CONVERSATIONS,
 	IAddNewConversationToConversationsAction,
 	IAddSentMessageToConversationAction,
-	IConversation,
+	IConversation, IConversationMessage,
 	IMessagesAction,
 	IMessagesState,
 	ISetPollingAction,
-	IStopPollingAction,
+	IStopPollingAction, IUpdateConversationWithNewMessageAction,
 	SET_POLLING,
-	STOP_POLLING
+	STOP_POLLING, UPDATE_CONVERSATION_WITH_NEW_MESSAGE
 } from "../types";
 
 export function changeCurrentConversationCase(state: IMessagesState, action: IMessagesAction) : IMessagesState {
@@ -73,6 +73,55 @@ export function stopPollingStateCase(state: IMessagesState, action:IStopPollingA
 		return {
 			...state,
 			polling: action.polling
+		}
+	}
+	return state
+}
+
+export function updateConversationWithNewMessageCase(state: IMessagesState, action: IUpdateConversationWithNewMessageAction) {
+	if (action.type === UPDATE_CONVERSATION_WITH_NEW_MESSAGE)
+	{	const message = action.message
+		const conversation = state.conversations.find((conversation: IConversation) => conversation._id === message.conversationId)
+
+		if (conversation === undefined) {
+			console.log('conv',conversation)
+			return  {
+				...state,
+				conversations: [
+					...state.conversations,
+					{
+						_id: message.conversationId,
+						targets: message.targets,
+						updatedAt: message.createdAt,
+						unseenMessages: 1,
+						messages: [message]
+					}
+				]
+			}
+		} else {
+			const newConversation = {
+				...conversation,
+				messages: [...conversation.messages, action.message]
+			}
+			console.log('newconv',newConversation)
+			if (state.currentConversation._id === message.conversationId) {
+				return {
+					...state,
+					conversations: [...state.conversations.filter(value => value._id !== action.message.conversationId), newConversation],
+					currentConversation: {
+						...state.currentConversation,
+						messages: [
+							...state.currentConversation.messages,
+							message
+						]
+					}
+				}
+			}
+
+			return {
+				...state,
+				conversations: [...state.conversations.filter(value => value._id !== action.message.conversationId), newConversation],
+			}
 		}
 	}
 	return state

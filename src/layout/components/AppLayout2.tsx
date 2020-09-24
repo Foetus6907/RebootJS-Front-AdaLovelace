@@ -14,6 +14,7 @@ import {
   makePollingConversationsStartAction,
   makePollingConversationsStopAction
 } from "../../messages/actions/makePollingConversationsStartAction";
+import {makeStartSocket} from "../../users/actions/makeStartSocket";
 
 
 const styles = (theme: Theme) => {
@@ -49,6 +50,7 @@ interface AppLayoutProps {
   makeFetchConversations: () => void;
   makePollingConversationsStart: () => void;
   makePollingConversationsStop: () => void;
+  makeStartSocket: () => void;
 }
 
 interface AppLayout2State {
@@ -64,7 +66,9 @@ class AppLayout2 extends Component<AppLayoutProps, AppLayout2State> {
       this.props.updateIdentity(connectedProfile);
       this.props.makeFetchUsers()
       this.props.makeFetchConversations()
-      this.props.makePollingConversationsStart()
+      // this.props.makePollingConversationsStart()
+      this.props.makeStartSocket()
+
 
     } catch (error) {
       console.log('Error getting conversations or connecteduser or users: ',error);
@@ -105,7 +109,8 @@ const mapDispatchToProps = (dispatch: any) => ({
   makeFetchUsers: () => dispatch(makeFetchUsersAction()),
   makeFetchConversations: () => dispatch(makeFetchConversationsAction()),
   makePollingConversationsStart: () => dispatch(makePollingConversationsStartAction()),
-  makePollingConversationsStop: () => dispatch(makePollingConversationsStopAction())
+  makePollingConversationsStop: () => dispatch(makePollingConversationsStopAction()),
+  makeStartSocket: ()=> dispatch(makeStartSocket())
 });
 
 

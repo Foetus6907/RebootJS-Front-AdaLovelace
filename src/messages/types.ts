@@ -59,6 +59,12 @@ export interface IMessagesState {
   polling?: NodeJS.Timeout;
 }
 
+export const UPDATE_CONVERSATION_WITH_NEW_MESSAGE = "UPDATE_CONVERSATION_WITH_NEW_MESSAGE"
+export interface IUpdateConversationWithNewMessageAction {
+  type: typeof UPDATE_CONVERSATION_WITH_NEW_MESSAGE,
+  message: IConversationMessage
+}
+
 export type IMessagesAction = IGetAllConversationsAction | IChangeCurrentConversationAction
                                   | IAddSentMessageToConversationAction | IAddNewConversationToConversationsAction
-                                  | ISetPollingAction | IStopPollingAction
+                                  | ISetPollingAction | IStopPollingAction | IUpdateConversationWithNewMessageAction
