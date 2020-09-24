@@ -21,8 +21,12 @@ class MessageSenderForm extends Component<MessageSenderFormProps, MessageSenderF
 
 	render(){
 		return <React.Fragment>
-			<form onSubmit={(event) => { event.preventDefault(); this.props.sendMessage(this.state.message) }}>
-        <textarea rows={3} onChange={(event) => {
+			<form onSubmit={(event) => {
+				event.preventDefault();
+				this.props.sendMessage(this.state.message);
+				this.setState({message: ''});
+			}}>
+        <textarea value={this.state.message} rows={3} onChange={(event) => {
 	        event.preventDefault();
 	        this.setState({message: event.target.value})
         }}/>

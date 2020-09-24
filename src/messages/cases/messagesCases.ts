@@ -5,7 +5,7 @@ import {
 	GET_ALL_CONVERSATIONS,
 	IAddNewConversationToConversationsAction,
 	IAddSentMessageToConversationAction,
-	IConversation, IConversationMessage,
+	IConversation,
 	IMessagesAction,
 	IMessagesState,
 	ISetPollingAction,

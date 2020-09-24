@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Box, createStyles, Drawer, Grid, Theme, Tooltip, withStyles} from "@material-ui/core";
+import {Box, createStyles, Drawer, Grid, Theme, withStyles} from "@material-ui/core";
 import {IDrawerContent} from "../types";
 import ContactList from "../../users/components/ContactList";
 import IconButton from "@material-ui/core/IconButton";
@@ -53,16 +53,16 @@ class AppDrawer extends Component<AppDrawerProps> {
         <Box className={this.props.classes.drawerHeader}>
           <Grid>
             <Grid item>
-              <Tooltip title="Contacts">
+              {/*<Tooltip title="Contacts">*/}
                 <IconButton onClick={()=> this.props.changeDrawerContent("contacts")} color='default' aria-label="profile">
                   <PeopleIcon fontSize="large" />
                 </IconButton>
-              </Tooltip>
-              <Tooltip title="Messages">
+              {/*</Tooltip>*/}
+              {/*<Tooltip title="Messages">*/}
                 <IconButton onClick={()=> this.props.changeDrawerContent("conversations")} color='default' aria-label="profile">
                   <ChatIcon fontSize="large" />
                 </IconButton>
-              </Tooltip>
+              {/*</Tooltip>*/}
               <IconButton onClick={this.props.hideDrawer} color='default' aria-label="profile">
                 <CloseIcon fontSize="large" />
               </IconButton>

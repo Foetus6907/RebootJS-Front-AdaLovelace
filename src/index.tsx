@@ -3,12 +3,13 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-// import {ThunkDispatch} from "redux-thunk";
-// import {IAppState} from "./appReducer";
-// import {Action} from "redux";
-// import {store} from "./store";
+import {makeInitAppAction} from "./layout/actions/makeInitApp";
+import {ThunkDispatch} from "redux-thunk";
+import {IAppState} from "./appReducer";
+import {Action} from "redux";
+import {store} from "./store";
 
-// (store.dispatch as ThunkDispatch<IAppState, void, Action>)(tonActionATrigger());
+(store.dispatch as ThunkDispatch<IAppState, void, Action>)(makeInitAppAction());
 ReactDOM.render(
   <React.StrictMode>
     <App />

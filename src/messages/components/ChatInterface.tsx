@@ -7,16 +7,13 @@ import MessageUserAttendedList from "./MessageUserAttendedList";
 import MessageList from "./MessageList";
 import {patchConversationSeen, sendMessage} from "../../api/methods";
 import {IAppState} from "../../appReducer";
-import {
-	addNewConversationToConversationsAction,
-	addSentMessageToConversationAction,
-	changeCurrentConversationAction,
-} from "../actions/messagesActions";
+import {addSentMessageToConversationAction, changeCurrentConversationAction,} from "../actions/messagesActions";
 import {connect} from "react-redux";
+import {makeChangeCurrentConvFromUser} from "../actions/makeChangeCurrentConvFromUser";
 
 
 const styles = (_theme: Theme) => createStyles({
-	h100:{
+	h100: {
 		height: '100%'
 	}
 });
@@ -28,10 +25,10 @@ interface ChatInterfaceProps {
 	conversations: IConversation[];
 	classes: any;
 
-	currentConversation?:IConversation
+	currentConversation?: IConversation
 	changeCurrentConversation: (conversation: IConversation) => void
 	addSentMessageToConversation: (message: IConversationMessage) => void
-	addNewConversationToConversations: (conversation: IConversation) => void
+	makeChangeCurrentConvFromUser: (conversationId: string, target: string) => void;
 }
 
 class ChatInterface extends React.Component<ChatInterfaceProps> {
@@ -39,6 +36,8 @@ class ChatInterface extends React.Component<ChatInterfaceProps> {
 	// TODO dispach/set global state current conversation based on conversation id and target
 	async componentDidMount() {
 		const conversations = this.props.conversations;
+		console.log('didmount', conversations)
+
 		const conversationId = this.props.match.params.conversationId;
 		let conversation = conversations.find(conv => conv._id === conversationId);
 		if (conversation) {
@@ -48,38 +47,26 @@ class ChatInterface extends React.Component<ChatInterfaceProps> {
 			if (!target) {
 				return history.push('/')
 			} else {
-				let conversation = {
-					_id: conversationId,
-					messages: [],
-					unseenMessages: 0,
-					updatedAt: new Date().toLocaleDateString(),
-					targets: [
-						target
-					]
-				}
-				console.log('par la')
-				this.props.addNewConversationToConversations(conversation)
-				this.props.changeCurrentConversation(conversation)
+				this.props.makeChangeCurrentConvFromUser(conversationId, target)
 			}
 		}
 	}
 
 	doSendMessage = async (message: string) => {
 		console.log('message', message)
-		const { currentConversation } = this.props;
+		const {currentConversation} = this.props;
 		console.log('conversation', currentConversation)
 
-		if(currentConversation) {
+		if (currentConversation) {
 			const sentMessage: IConversationMessage = await sendMessage(currentConversation._id, currentConversation.targets, message);
-
 			// Redux dispach sendMessage to set state of current conversation  with new message state
 			this.props.addSentMessageToConversation(sentMessage)
 		}
 	}
 
 	conversationSeen = () => {
-		if(this.props.currentConversation) {
-			patchConversationSeen(this.props.currentConversation._id).then().catch(e=> console.log(e));
+		if (this.props.currentConversation) {
+			patchConversationSeen(this.props.currentConversation._id).then().catch(e => console.log(e));
 		}
 	}
 
@@ -99,7 +86,7 @@ class ChatInterface extends React.Component<ChatInterfaceProps> {
 
 							<Grid item xs={4} className={this.props.classes.h100}>
 								<Paper elevation={3} className={this.props.classes.h100}>
-									<MessageUserAttendedList />
+									<MessageUserAttendedList/>
 								</Paper>
 							</Grid>
 						</Grid>
@@ -110,7 +97,7 @@ class ChatInterface extends React.Component<ChatInterfaceProps> {
 	}
 }
 
-const mapStateToProps= (state : IAppState) => {
+const mapStateToProps = (state: IAppState) => {
 	return {
 		currentConversation: state.messages.currentConversation,
 		conversations: state.messages.conversations
@@ -119,7 +106,7 @@ const mapStateToProps= (state : IAppState) => {
 const mapDispatchToProps = (dispatch: any) => ({
 	changeCurrentConversation: (conversation: IConversation) => dispatch(changeCurrentConversationAction(conversation)),
 	addSentMessageToConversation: (message: IConversationMessage) => dispatch(addSentMessageToConversationAction(message)),
-	addNewConversationToConversations: (conversation: IConversation) => dispatch(addNewConversationToConversationsAction(conversation))
+	makeChangeCurrentConvFromUser: (conversationId: string, target: string) => dispatch(makeChangeCurrentConvFromUser(conversationId, target))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(withStyles(styles)(ChatInterface)));

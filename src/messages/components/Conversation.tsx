@@ -15,6 +15,7 @@ import {Link} from "react-router-dom";
 import {IProfile} from "../../profile/types";
 import {IAppState} from "../../appReducer";
 import {connect} from "react-redux";
+import {changeCurrentConversationAction} from "../actions/messagesActions";
 
 const styles = (_theme: Theme) => {
   return {
@@ -28,12 +29,13 @@ interface ConversationProps {
   classes: any;
   conversation: IConversation;
   users: IProfile[];
+  updateCurrentConversation: (conversation: IConversation) => void;
 }
 
 class Conversation extends Component<ConversationProps> {
   render() {
     return <Fragment>
-        <ListItem  alignItems="flex-start" button component={Link} to={`/conversation/${this.props.conversation._id}`}>
+        <ListItem  alignItems="flex-start" button onClick={()=> this.props.updateCurrentConversation(this.props.conversation)} component={Link} to={`/conversation/${this.props.conversation._id}`}>
           <ListItemAvatar>
             <AvatarGroup max={3}>
               {this.props.conversation.targets.map((target, index) => <Avatar key={index}>{this.getUserFormList(target)?.firstname[0] || 'Unknown User'[0]}</Avatar>)}
@@ -68,4 +70,8 @@ const mapStateToProps= (state : IAppState) => {
     users: state.profil.users,
   }
 }
-export default connect(mapStateToProps)(withStyles(styles)(Conversation));
+
+const mapDispatchToProps = (dispatch: any) => ({
+  updateCurrentConversation: (conversation: IConversation) => dispatch(changeCurrentConversationAction(conversation)),
+});
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Conversation));
