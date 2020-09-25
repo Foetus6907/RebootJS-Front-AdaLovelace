@@ -16,7 +16,7 @@ import {
 	STOP_POLLING, UPDATE_CONVERSATION_WITH_NEW_MESSAGE
 } from "../types";
 
-export function changeCurrentConversationAction(currentConversation: IConversation): IChangeCurrentConversationAction {
+export function changeCurrentConversationAction(currentConversation?: IConversation): IChangeCurrentConversationAction {
 	return {
 		type: CHANGE_CURRENT_CONVERSATION,
 		currentConversation: currentConversation,

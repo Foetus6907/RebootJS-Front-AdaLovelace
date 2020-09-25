@@ -12,15 +12,17 @@ import {IProfile} from "../../profile/types";
 import {connect} from "react-redux";
 import {IAppState} from "../../appReducer";
 import {changeDrawerContentAction} from "../actions/changeDrawerContentAction";
+import {makeExitAppAction} from "../actions/makeExitAppAction";
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 interface AppMenuProps {
   show: (showDrawer: boolean) => void;
   showDrawer: boolean;
   profile?: IProfile
+  makeExitApp: () => void;
 }
 
-
-export function AppMenu({ show, showDrawer , profile } : AppMenuProps){
+function AppMenu({ show, showDrawer , profile, makeExitApp } : AppMenuProps){
   return (
     <Fragment>
       <AppBar position="static" style={{ height: '10vh' }}>
@@ -51,6 +53,10 @@ export function AppMenu({ show, showDrawer , profile } : AppMenuProps){
           }
           <Grid item>
             <ProfilButton />
+
+              <IconButton onClick={() => makeExitApp()} color='default' aria-label="profile">
+                <ExitToAppIcon fontSize="large" />
+              </IconButton>
           </Grid>
         </Grid>
       </AppBar>
@@ -65,14 +71,14 @@ const mapStateToProps= ({ profil, layout} : IAppState) => {
   }
 }
 
-const mapDispatchToProps =  (dispatch: any) => {
-  return {
-    show: (showDrawer: boolean) => {
-      const content = showDrawer ? 'conversations' : undefined;
 
-      dispatch(changeDrawerContentAction(content, showDrawer))
-    },
-  }
-}
+const mapDispatchToProps = (dispatch: any) => ({
+  makeExitApp: () => {dispatch(makeExitAppAction())  },
+  show: (showDrawer: boolean) => {
+    const content = showDrawer ? 'conversations' : undefined;
+
+    dispatch(changeDrawerContentAction(content, showDrawer))
+  },
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(AppMenu);

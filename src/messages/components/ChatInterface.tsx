@@ -1,15 +1,14 @@
 import React, {Fragment} from 'react';
 import {match, withRouter} from 'react-router-dom';
 import {IConversation, IConversationMessage} from "../types";
-import history from "../../history";
 import {Container, createStyles, Grid, Paper, Theme, withStyles} from "@material-ui/core";
 import MessageUserAttendedList from "./MessageUserAttendedList";
 import MessageList from "./MessageList";
 import {patchConversationSeen, sendMessage} from "../../api/methods";
 import {IAppState} from "../../appReducer";
-import {addSentMessageToConversationAction, changeCurrentConversationAction,} from "../actions/messagesActions";
+import {addSentMessageToConversationAction} from "../actions/messagesActions";
 import {connect} from "react-redux";
-import {makeChangeCurrentConvFromUser} from "../actions/makeChangeCurrentConvFromUser";
+import {makeMountChatInterfaceAction} from "../actions/makeMountChatInterfaceAction";
 
 
 const styles = (_theme: Theme) => createStyles({
@@ -26,30 +25,23 @@ interface ChatInterfaceProps {
 	classes: any;
 
 	currentConversation?: IConversation
-	changeCurrentConversation: (conversation: IConversation) => void
-	addSentMessageToConversation: (message: IConversationMessage) => void
-	makeChangeCurrentConvFromUser: (conversationId: string, target: string) => void;
+	addSentMessageToConversation: (message: IConversationMessage) => void;
+
+	makeMountChatInterface: (conversationId: string, target?: string) => void;
 }
 
 class ChatInterface extends React.Component<ChatInterfaceProps> {
 
 	// TODO dispach/set global state current conversation based on conversation id and target
 	async componentDidMount() {
-		const conversations = this.props.conversations;
-		console.log('didmount', conversations)
-
 		const conversationId = this.props.match.params.conversationId;
-		let conversation = conversations.find(conv => conv._id === conversationId);
-		if (conversation) {
-			this.props.changeCurrentConversation(conversation)
-		} else {
-			const target = new URLSearchParams(this.props.location.search).get('target')
-			if (!target) {
-				return history.push('/')
-			} else {
-				this.props.makeChangeCurrentConvFromUser(conversationId, target)
-			}
+		const target = new URLSearchParams(this.props.location.search).get('target');
+
+		if (conversationId) {
+			if (target) {this.props.makeMountChatInterface(conversationId, target)}
+			this.props.makeMountChatInterface(conversationId)
 		}
+
 	}
 
 	doSendMessage = async (message: string) => {
@@ -104,9 +96,8 @@ const mapStateToProps = (state: IAppState) => {
 	}
 }
 const mapDispatchToProps = (dispatch: any) => ({
-	changeCurrentConversation: (conversation: IConversation) => dispatch(changeCurrentConversationAction(conversation)),
 	addSentMessageToConversation: (message: IConversationMessage) => dispatch(addSentMessageToConversationAction(message)),
-	makeChangeCurrentConvFromUser: (conversationId: string, target: string) => dispatch(makeChangeCurrentConvFromUser(conversationId, target))
+	makeMountChatInterface: (conversationId: string, target?: string) => dispatch(makeMountChatInterfaceAction(conversationId, target)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(withStyles(styles)(ChatInterface)));

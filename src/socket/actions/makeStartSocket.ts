@@ -2,6 +2,7 @@ import {IAppState} from "../../appReducer";
 import {connect} from "../../api/socket_methods";
 import {IConversationMessage} from "../../messages/types";
 import {updateConversationWithNewMessageAction} from "../../messages/actions/messagesActions";
+import {setSocketStateAction} from "./setSocketStateAction";
 
 export function makeStartSocket(): (dispatch: any, getState: ()=> IAppState) => void {
 	return (dispatch: any, getState: () => IAppState) => {
@@ -13,10 +14,11 @@ export function makeStartSocket(): (dispatch: any, getState: ()=> IAppState) => 
 		})
 
 		socket.on('new-message-received', (message: IConversationMessage) => {
-			console.log('Received new mesage')
+			console.log('Received new message')
 
 			dispatch(updateConversationWithNewMessageAction(message))
 		})
-	}
 
+		dispatch(setSocketStateAction(socket))
+	}
 }

@@ -27,7 +27,7 @@ export function getAllConversationsCase(state: IMessagesState, action: IMessages
 	if (action.type === GET_ALL_CONVERSATIONS)
 		return {
 			...state,
-			conversations: action.conversations,
+			conversations: [...state.conversations ,...action.conversations],
 		}
 	return state
 }
@@ -104,7 +104,7 @@ export function updateConversationWithNewMessageCase(state: IMessagesState, acti
 				messages: [...conversation.messages, action.message]
 			}
 			console.log('newconv',newConversation)
-			if (state.currentConversation._id === message.conversationId) {
+			if (state.currentConversation?._id === message.conversationId) {
 				return {
 					...state,
 					conversations: [...state.conversations.filter(value => value._id !== action.message.conversationId), newConversation],

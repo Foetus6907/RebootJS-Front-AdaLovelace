@@ -25,7 +25,7 @@ class MessageUserAttendedList extends React.Component<MessageUserAttendedListPro
 
 const mapStateToProps= (state : IAppState) => {
 	return {
-		attendedUsers: state.profil.users.filter(user => state.messages.currentConversation.targets.includes(user._id)),
+		attendedUsers: state.messages.currentConversation ? state.profil.users.filter(user => state.messages.currentConversation?.targets.includes(user._id)) : [],
 	}
 }
 

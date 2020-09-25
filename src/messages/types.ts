@@ -25,7 +25,7 @@ export interface IGetAllConversationsAction {
 export const CHANGE_CURRENT_CONVERSATION = "CHANGE_CURRENT_CONVERSATION"
 export interface IChangeCurrentConversationAction {
   type: typeof CHANGE_CURRENT_CONVERSATION;
-  currentConversation: IConversation
+  currentConversation?: IConversation
 }
 
 export const ADD_SENT_MESSAGE_TO_CONVERSATION = "ADD_SENT_MESSAGE_TO_CONVERSATION"
@@ -54,7 +54,7 @@ export interface IStopPollingAction {
 }
 
 export interface IMessagesState {
-  currentConversation: IConversation;
+  currentConversation?: IConversation;
   conversations: IConversation[];
   polling?: NodeJS.Timeout;
 }

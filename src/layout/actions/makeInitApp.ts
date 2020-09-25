@@ -3,7 +3,7 @@ import {getConnectedProfile} from "../../api/methods";
 import {updateConnectedProfileAction} from "../../profile/actions/ProfileAndUserAction";
 import {makeFetchUsersAction} from "../../profile/actions/makeFetchUsersAction";
 import {makeFetchConversationsAction} from "../../messages/actions/makeFetchConversationsAction";
-import {makeStartSocket} from "../../users/actions/makeStartSocket";
+import {makeStartSocket} from "../../socket/actions/makeStartSocket";
 
 export function makeInitAppAction(): (dispatch: any, getState: () => IAppState) => void {
 	return async (dispatch: any, getState: () => IAppState) => {

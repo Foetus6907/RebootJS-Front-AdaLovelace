@@ -47,6 +47,22 @@ export function register(email: string, password: string, firstname: string, las
 		.then((resp) => resp.data);
 }
 
+export function logout() {
+	return axios
+		.get(
+			`${process.env.REACT_APP_BACKEND}/login/logout`,
+			{
+				withCredentials: true
+			}
+		)
+		.then(resp => {
+			return true
+		})
+		.catch(e => {
+			console.log('Issue logout', e);
+			return false;
+		});
+}
 
 export async function getConversations3(connectedUser: IProfile): Promise<IConversation[]> {
 	const messages: IConversationMessage[] = await axios.get(
@@ -70,7 +86,7 @@ export async function getConversations3(connectedUser: IProfile): Promise<IConve
 	for (const conversationId in batches) {
 		const messages = batches[conversationId];
 		const attendees = [...new Set(messages.flatMap(({ emitter, targets }) => [emitter, ...targets]))];
-		const targets = attendees.filter((id) => id !== connectedUser._id);
+		const targets = attendees.filter((id) => id !== connectedUser._id).length === 0 ? attendees : attendees.filter((id) => id !== connectedUser._id);
 		conversations.push({
 			_id: conversationId,
 			targets: targets,

@@ -60,7 +60,7 @@ class MessageList extends Component <MessageListProps> {
 
 const mapStateToProps= (state : IAppState) => {
   return {
-    messages: state.messages.currentConversation.messages,
+    messages: state.messages.currentConversation ? state.messages.currentConversation.messages : [],
   }
 }
 export default connect(mapStateToProps)(withStyles(styles)(MessageList));
